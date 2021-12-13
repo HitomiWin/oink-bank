@@ -22,6 +22,7 @@
     "react-query": "^3.34.2",
     "react-router-dom": "^6.1.1",
     "react-scripts": "4.0.3",
+    "sass": "^1.45.0",
     "typescript": "^4.5.3",
     "web-vitals": "^1.1.2"
   },
