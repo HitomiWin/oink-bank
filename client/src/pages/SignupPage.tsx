@@ -1,4 +1,61 @@
-import { memo, VFC } from "react";
+import React, { useRef, useState, VFC, memo } from "react";
+import { Row, Col, Form, Button, Card, Alert } from "react-bootstrap";
+import { Link, useNavigate } from "react-router-dom";
+
 export const SignupPage: VFC = memo(() => {
-  return <div>SignupPage</div>;
+  const emailRef = useRef<HTMLInputElement>(null);
+  const passwordRef = useRef<HTMLInputElement>(null);
+  const passwordConfirmRef = useRef<HTMLInputElement>(null);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+  };
+
+  return (
+    <>
+      <Row>
+        <Col md={{ span: 6, offset: 3 }}>
+          <Card>
+            <Card.Body>
+              <Card.Title className="mb-3 text-center text-secondary">Sign Up</Card.Title>
+
+              {error && <Alert variant="danger">{error}</Alert>}
+
+              <Form onSubmit={handleSubmit}>
+                <Form.Group id="email" className="mb-3  text-secondary">
+                  <Form.Label>Email</Form.Label>
+                  <Form.Control type="email" ref={emailRef} required />
+                </Form.Group>
+
+                <Form.Group id="password" className="mb-3  text-secondary">
+                  <Form.Label>Password</Form.Label>
+                  <Form.Control type="password" ref={passwordRef} required />
+                </Form.Group>
+
+                <Form.Group id="password-confirm" className="mb-3 text-secondary">
+                  <Form.Label>Password Confirmation</Form.Label>
+                  <Form.Control
+                    type="password"
+                    ref={passwordConfirmRef}
+                    required
+                  />
+                </Form.Group>
+
+                <Button disabled={loading} type="submit" className="text-info">
+                  Create Account
+                </Button>
+              </Form>           
+            </Card.Body>
+          </Card>
+
+          <div className="text-center mt-3 text-primary">
+            Already have an account? <Link to="/login" className="text-primary">Log In</Link>
+          </div>
+        </Col>
+      </Row>
+    </>
+  );
 });
