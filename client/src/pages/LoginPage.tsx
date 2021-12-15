@@ -19,7 +19,9 @@ export const LoginPage: VFC = memo(() => {
         <Col md={{ span: 6, offset: 3 }}>
           <Card>
             <Card.Body>
-              <Card.Title className="mb-3  text-center text-secondary">Log In</Card.Title>
+              <Card.Title className="mb-3  text-center text-secondary">
+                Log In
+              </Card.Title>
 
               {error && <Alert variant="danger">{error}</Alert>}
 
@@ -40,8 +42,11 @@ export const LoginPage: VFC = memo(() => {
               </Form>
             </Card.Body>
           </Card>
-          <div className="text-center mt-3">
-            Need an account? <Link to="/signup" className="text-primary">Sign Up</Link>
+          <div className="text-center mt-3 text-primary">
+            Are you not a member yet?{" "}
+            <Link to="/signup" className="text-primary">
+              Sign Up
+            </Link>
           </div>
         </Col>
       </Row>
