@@ -17,7 +17,7 @@ export const LoginPage: VFC = memo(() => {
     <>
       <Row>
         <Col md={{ span: 6, offset: 3 }}>
-          <Card>
+          <Card className="rounded-lg">
             <Card.Body>
               <Card.Title className="mb-3  text-center text-secondary">
                 Log In
@@ -41,13 +41,13 @@ export const LoginPage: VFC = memo(() => {
                 </Button>
               </Form>
             </Card.Body>
+            <div className="text-center m-3 text-primary">
+              Are you not a member yet?{" "}
+              <Link to="/signup" className="text-primary">
+                Sign Up
+              </Link>
+            </div>
           </Card>
-          <div className="text-center mt-3 text-primary">
-            Are you not a member yet?{" "}
-            <Link to="/signup" className="text-primary">
-              Sign Up
-            </Link>
-          </div>
         </Col>
       </Row>
     </>

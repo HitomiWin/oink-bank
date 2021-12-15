@@ -18,9 +18,11 @@ export const SignupPage: VFC = memo(() => {
     <>
       <Row>
         <Col md={{ span: 6, offset: 3 }}>
-          <Card>
+          <Card className="rounded-lg">
             <Card.Body>
-              <Card.Title className="mb-3 text-center text-secondary">Sign Up</Card.Title>
+              <Card.Title className="mb-3 text-center text-secondary">
+                Sign Up
+              </Card.Title>
 
               {error && <Alert variant="danger">{error}</Alert>}
 
@@ -35,7 +37,10 @@ export const SignupPage: VFC = memo(() => {
                   <Form.Control type="password" ref={passwordRef} required />
                 </Form.Group>
 
-                <Form.Group id="password-confirm" className="mb-3 text-secondary">
+                <Form.Group
+                  id="password-confirm"
+                  className="mb-3 text-secondary"
+                >
                   <Form.Label>Password Confirmation</Form.Label>
                   <Form.Control
                     type="password"
@@ -47,13 +52,15 @@ export const SignupPage: VFC = memo(() => {
                 <Button disabled={loading} type="submit" className="text-info">
                   Create Account
                 </Button>
-              </Form>           
+              </Form>
             </Card.Body>
+            <div className="text-center m-3 text-primary">
+              Already have an account?{" "}
+              <Link to="/login" className="text-primary">
+                Log In
+              </Link>
+            </div>
           </Card>
-
-          <div className="text-center mt-3 text-primary">
-            Already have an account? <Link to="/login" className="text-primary">Log In</Link>
-          </div>
         </Col>
       </Row>
     </>

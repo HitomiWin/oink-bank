@@ -3,7 +3,6 @@ import { Row, Col, Form, Button, Card, Alert } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUserCircle } from "@fortawesome/free-solid-svg-icons";
 
-
 export const UpdateProfilePage: VFC = memo(() => {
   const displayNameRef = useRef<HTMLInputElement>(null);
   const emailRef = useRef<HTMLInputElement>(null);
@@ -21,14 +20,18 @@ export const UpdateProfilePage: VFC = memo(() => {
     <>
       <Row>
         <Col md={{ span: 6, offset: 3 }}>
-          <Card>
+          <Card className="rounded-lg">
             <Card.Body>
               <Card.Title className="mb-3  text-center text-secondary">
                 Update Profile
                 <div className="text-end">
-                <span role="img" aria-label="A piggy bank" >
-            <FontAwesomeIcon icon={faUserCircle} color="#f0ad4e" size="2x" />
-          </span>
+                  <span role="img" aria-label="A piggy bank">
+                    <FontAwesomeIcon
+                      icon={faUserCircle}
+                      color="#f0ad4e"
+                      size="2x"
+                    />
+                  </span>
                 </div>
               </Card.Title>
               {error && <Alert variant="danger">{error}</Alert>}
