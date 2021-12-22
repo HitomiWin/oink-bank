@@ -6,9 +6,9 @@ import React, {
   useEffect,
   useState,
 } from "react";
-import firebase from 'firebase/compat/app';
 
 import {
+  User,
   createUserWithEmailAndPassword,
   onAuthStateChanged,
   sendPasswordResetEmail,
@@ -21,30 +21,27 @@ import {
 import { auth } from "../firebase/index";
 
 interface AuthContextProps {
-  currentUser: firebase.User | null ;
+  currentUser: User | null;
 }
-
 
 interface Props {
   children: ReactNode;
 }
-const AuthContext = createContext<AuthContextProps>({ currentUser: null });
+const AuthContext = createContext({ } as AuthContextProps);
 
 const useAuthContext = () => {
   return useContext(AuthContext);
 };
 
 const AuthContextProvider: VFC<Props> = ({ children }) => {
-  const [currentUser, setCurrentUser] = useState<firebase.User | null >(
-   null
-  );
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const signup = (email, password) => {
+  const signup = (email: string, password: string) => {
     return createUserWithEmailAndPassword(auth, email, password);
   };
 
-  const login = (email, password) => {
+  const login = (email: string, password: string) => {
     return signInWithEmailAndPassword(auth, email, password);
   };
 
@@ -52,19 +49,21 @@ const AuthContextProvider: VFC<Props> = ({ children }) => {
     return signOut(auth);
   };
 
-  const resetPassword = (email:string) => {
+  const resetPassword = (email: string) => {
     return sendPasswordResetEmail(auth, email);
   };
 
-  const setEmail = (newEmail) => {
-    return updateEmail(currentUser, newEmail);
+  const setEmail = (newEmail: string) => {
+    if (currentUser) return updateEmail(currentUser, newEmail);
   };
 
-  const setPassword = (newPassword) => {
+  const setPassword = (newPassword: string) => {
+    if (currentUser)
     return updatePassword(currentUser, newPassword);
   };
 
-  const setDisplayName = (name:String) => {
+  const setDisplayName = (name: string) => {
+    if (currentUser)
     return updateProfile(currentUser, {
       displayName: name,
     });
