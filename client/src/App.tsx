@@ -11,6 +11,7 @@ import { UpdateProfilePage } from "./pages/UpdateProfilePage";
 import { RegisterChild } from "./pages/RegisterChild";
 import { EditChild } from "./pages/EditChild";
 import { ChildHistoryList } from "./pages/ChildHistoryList";
+import RequireAuth from "./components/RequireAuth";
 
 export const App: VFC = memo(() => {
   return (
@@ -18,14 +19,50 @@ export const App: VFC = memo(() => {
       <Navigation />
       <Container id="App" className="py-3">
         <Routes>
-          <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/logout" element={<LogoutPage />} />
           <Route path="/signup" element={<SignupPage />} />
-          <Route path="/update-profile" element={<UpdateProfilePage />} />
-          <Route path="/register-child" element={<RegisterChild />} />
-          <Route path="/edit-child/:id" element={<EditChild />} />
-          <Route path="/child-history/:id" element={<ChildHistoryList />} />
+          {/* Protected routes */}
+          <Route
+            path="/"
+            element={
+              <RequireAuth redirectTo="/login">
+                <HomePage />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/update-profile"
+            element={
+              <RequireAuth redirectTo="/login">
+                <UpdateProfilePage />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/register-child"
+            element={
+              <RequireAuth redirectTo="/login">
+                <RegisterChild />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/edit-child/:id"
+            element={
+              <RequireAuth redirectTo="/login">
+                <EditChild />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/child-history/:id"
+            element={
+              <RequireAuth redirectTo="/login">
+                <ChildHistoryList />
+              </RequireAuth>
+            }
+          />
           <Route path="*" element={<PageNotFound />} />
         </Routes>
       </Container>

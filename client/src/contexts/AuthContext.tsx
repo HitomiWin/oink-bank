@@ -11,7 +11,7 @@ import {
   User,
   createUserWithEmailAndPassword,
   onAuthStateChanged,
-  sendPasswordResetEmail,
+  // sendPasswordResetEmail,
   signInWithEmailAndPassword,
   signOut,
   updateEmail,
@@ -27,7 +27,7 @@ interface AuthContextProps {
 interface Props {
   children: ReactNode;
 }
-const AuthContext = createContext({ } as AuthContextProps);
+const AuthContext = createContext({} as AuthContextProps);
 
 const useAuthContext = () => {
   return useContext(AuthContext);
@@ -49,29 +49,28 @@ const AuthContextProvider: VFC<Props> = ({ children }) => {
     return signOut(auth);
   };
 
-  const resetPassword = (email: string) => {
-    return sendPasswordResetEmail(auth, email);
-  };
+  // const resetPassword = (email: string) => {
+  //   return sendPasswordResetEmail(auth, email);
+  // };
 
   const setEmail = (newEmail: string) => {
     if (currentUser) return updateEmail(currentUser, newEmail);
   };
 
   const setPassword = (newPassword: string) => {
-    if (currentUser)
-    return updatePassword(currentUser, newPassword);
+    if (currentUser) return updatePassword(currentUser, newPassword);
   };
 
   const setDisplayName = (name: string) => {
     if (currentUser)
-    return updateProfile(currentUser, {
-      displayName: name,
-    });
+      return updateProfile(currentUser, {
+        displayName: name,
+      });
   };
 
-  // add auth-state-observer here (somehow... 😈)
+
   useEffect(() => {
-    // listen for auth-state changes
+
     onAuthStateChanged(auth, (user) => {
       setCurrentUser(user);
       setLoading(false);
@@ -79,13 +78,12 @@ const AuthContextProvider: VFC<Props> = ({ children }) => {
   }, []);
 
   const contextValues = {
-    // here be everything the children needs/should be able to use
     currentUser,
     loading,
     login,
     logout,
     signup,
-    resetPassword,
+    // resetPassword,
     setDisplayName,
     setEmail,
     setPassword,
