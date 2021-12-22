@@ -30,7 +30,7 @@ export const ChildCard: VFC = memo(() => {
   return (
     <>
       <Row className="my-2">
-        <Col xs={{ span: 12 }} md={{ span: 8, offset: 2 }}>
+        <Col xs={{ span: 12 }} md={{ span: 8, offset: 2 }} lg={{span:6, offset:3}}>
           <Card className="rounded-lg">
             <Card.Body>
               <Col md={{ span: 12 }}>
