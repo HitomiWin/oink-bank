@@ -1,5 +1,5 @@
 import { memo, VFC, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import {useNavigate } from "react-router-dom";
 import { Row, Col, Button, Card } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -10,7 +10,7 @@ import {
 import "../App.scss";
 
 export const ChildCard: VFC = memo(() => {
-  const [loading, setLoading] = useState(false);
+  const [loading, ] = useState(false);
   const navigate = useNavigate();
 
   const handleCardOnClick = (

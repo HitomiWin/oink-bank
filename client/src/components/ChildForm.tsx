@@ -7,8 +7,8 @@ import "../App.scss";
 export const ChildForm: VFC = memo(() => {
   const nameRef = useRef<HTMLInputElement>(null);
   const priceRef = useRef<HTMLInputElement>(null);
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [error] = useState(null);
+  const [loading] = useState(false);
   const [isWeekly, setIsWeekly] = useState(true);
 
   const handleWeeklyOnClick = () => {

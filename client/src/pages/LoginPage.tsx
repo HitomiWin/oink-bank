@@ -5,9 +5,9 @@ import { Link, useNavigate } from "react-router-dom";
 export const LoginPage: VFC = memo(() => {
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
+  const [error] = useState(null);
+  const [loading] = useState(false);
+  // const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -16,7 +16,7 @@ export const LoginPage: VFC = memo(() => {
   return (
     <>
       <Row>
-        <Col  md={{ span: 6, offset: 3 }}>
+        <Col md={{ span: 6, offset: 3 }}>
           <Card className="rounded-lg">
             <Card.Body>
               <Card.Title className="mb-3  text-center text-secondary">
