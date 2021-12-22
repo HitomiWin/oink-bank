@@ -16,7 +16,7 @@ export const LoginPage: VFC = memo(() => {
   return (
     <>
       <Row>
-        <Col md={{ span: 6, offset: 3 }}>
+        <Col  md={{ span: 6, offset: 3 }}>
           <Card className="rounded-lg">
             <Card.Body>
               <Card.Title className="mb-3  text-center text-secondary">

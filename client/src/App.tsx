@@ -10,7 +10,7 @@ import { SignupPage } from "./pages/SignupPage";
 import { UpdateProfilePage } from "./pages/UpdateProfilePage";
 import { RegisterChild } from "./pages/RegisterChild";
 import { EditChild } from "./pages/EditChild";
-import { ChildHistory } from "./pages/ChildHistory";
+import { ChildHistoryList } from "./pages/ChildHistoryList";
 
 export const App: VFC = memo(() => {
   return (
@@ -25,7 +25,7 @@ export const App: VFC = memo(() => {
           <Route path="/update-profile" element={<UpdateProfilePage />} />
           <Route path="/register-child" element={<RegisterChild />} />
           <Route path="/edit-child/:id" element={<EditChild />} />
-          <Route path="/child-history/:id" element={<ChildHistory />} />
+          <Route path="/child-history/:id" element={<ChildHistoryList />} />
           <Route path="*" element={<PageNotFound />} />
         </Routes>
       </Container>

@@ -1,4 +1,12 @@
-import { memo, VFC } from "react";
+import React,{VFC, memo} from "react";
+import { ChildForm } from "../components/ChildForm";
+
 export const RegisterChild: VFC = memo(() => {
-  return <div>register child</div>;
+ return (
+   <>
+   <h3 className='text-center'>Register Child</h3>
+   <ChildForm />
+   </>
+ )
+  
 });

@@ -2,16 +2,12 @@ import React, { memo, VFC } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { Container, Nav, Navbar, NavDropdown } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPiggyBank } from "@fortawesome/free-solid-svg-icons";
+import { faPiggyBank,faHome } from "@fortawesome/free-solid-svg-icons";
 import { faUser } from "@fortawesome/free-regular-svg-icons";
 
 export const Navigation: VFC = memo(() => {
   return (
-    <Navbar
-      bg="primary"
-      variant="dark"
-      expand="sm"
-    >
+    <Navbar bg="primary" variant="dark">
       <Container>
         <Link to="/" className="navbar-brand  text-info">
           <span role="img" aria-label="A piggy bank">
@@ -23,6 +19,13 @@ export const Navigation: VFC = memo(() => {
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="ms-auto">
             <>
+              <NavLink to="/" className="nav-link text-info">
+              <FontAwesomeIcon
+                    icon={faHome}
+                    size="lg"
+                    className="text-info"
+                  />
+              </NavLink>
               <NavDropdown
                 title={
                   <FontAwesomeIcon
@@ -33,10 +36,10 @@ export const Navigation: VFC = memo(() => {
                 }
                 id="basic-nav-dropdown"
               >
-                <NavLink to="/update-profile" className="dropdown-item ">
+                <NavLink to="/update-profile" className="dropdown-item">
                   Update Profile
                 </NavLink>
-                <NavLink to="/register-child" className="dropdown-item ">
+                <NavLink to="/register-child" className="dropdown-item">
                   Register Child
                 </NavLink>
                 <NavDropdown.Divider />
