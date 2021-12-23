@@ -19,6 +19,7 @@ import {
   updatePassword,
   updateProfile,
 } from "firebase/auth";
+import { useNavigate } from 'react-router-dom'
 import { auth } from "../firebase/index";
 
 interface AuthContextProps {
@@ -45,6 +46,7 @@ const useAuthContext = () => {
 const AuthContextProvider: VFC<Props> = ({ children }) => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate()
 
   const signup = (email: string, password: string) => {
     return createUserWithEmailAndPassword(auth, email, password);
@@ -54,8 +56,9 @@ const AuthContextProvider: VFC<Props> = ({ children }) => {
     return signInWithEmailAndPassword(auth, email, password);
   };
 
-  const logout = () => {
-    return signOut(auth);
+  const logout = async () => {
+    await signOut(auth);
+    navigate('/login')
   };
 
   // const resetPassword = (email: string) => {

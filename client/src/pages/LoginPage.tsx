@@ -59,7 +59,7 @@ export const LoginPage: VFC = memo(() => {
             <div className="text-center m-3 text-primary">
               Are you not a member yet?
               <Link to="/signup" className="text-primary">
-                Login
+                Signup
               </Link>
             </div>
           </Card>
