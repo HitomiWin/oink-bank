@@ -9,6 +9,7 @@ import React, {
 
 import {
   User,
+  UserCredential,
   createUserWithEmailAndPassword,
   onAuthStateChanged,
   // sendPasswordResetEmail,
@@ -22,6 +23,14 @@ import { auth } from "../firebase/index";
 
 interface AuthContextProps {
   currentUser: User | null;
+  login:(email:string, password:string)=> Promise<UserCredential>;
+  loading: boolean;
+  logout:()=> Promise<void>;
+  signup:(email: string, password: string) => Promise<UserCredential>;
+  // resetPassword,
+  setDisplayName:(name: string) => Promise<void> | undefined;
+  setEmail:(newEmail: string) => Promise<void> | undefined;
+  setPassword:(newPassword: string) => Promise<void> | undefined;
 }
 
 interface Props {
@@ -68,16 +77,14 @@ const AuthContextProvider: VFC<Props> = ({ children }) => {
       });
   };
 
-
   useEffect(() => {
-
     onAuthStateChanged(auth, (user) => {
       setCurrentUser(user);
       setLoading(false);
     });
   }, []);
 
-  const contextValues = {
+  const contextValues :  AuthContextProps = {
     currentUser,
     loading,
     login,

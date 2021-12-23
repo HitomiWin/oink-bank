@@ -1,23 +1,38 @@
 import React, { useRef, useState, VFC, memo } from "react";
 import { Row, Col, Form, Button, Card, Alert } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
+import { useAuthContext } from "../contexts/AuthContext";
 
 export const LoginPage: VFC = memo(() => {
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
-  const [error] = useState(null);
-  const [loading] = useState(false);
-  // const navigate = useNavigate();
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const { login } = useAuthContext();
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setError(null);
+    if(!emailRef.current || !passwordRef.current){
+      return
+    }else {
+      try {
+        setLoading(true);
+        await login(emailRef.current.value, passwordRef.current.value);
+        navigate("/");
+      } catch (e:any) {
+        setError(e.message);
+        setLoading(false);
+      }
+    }
   };
 
   return (
     <>
       <Row>
-        <Col md={{ span: 6, offset: 3 }}>
-          <Card className="rounded-lg">
+        <Col xs={12} md={{ span: 8, offset: 2 }} lg={{ span: 6, offset: 3 }}>
+          <Card className="rounded-lg px-3">
             <Card.Body>
               <Card.Title className="mb-3  text-center text-secondary">
                 Log In
@@ -44,7 +59,7 @@ export const LoginPage: VFC = memo(() => {
             <div className="text-center m-3 text-primary">
               Are you not a member yet?
               <Link to="/signup" className="text-primary">
-                Sign Up
+                Login
               </Link>
             </div>
           </Card>
