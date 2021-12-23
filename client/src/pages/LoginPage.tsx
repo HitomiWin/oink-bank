@@ -6,7 +6,7 @@ import { useAuthContext } from "../contexts/AuthContext";
 export const LoginPage: VFC = memo(() => {
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<null |string >(null);
   const [loading, setLoading] = useState(false);
   const { login } = useAuthContext();
   const navigate = useNavigate();
@@ -19,14 +19,18 @@ export const LoginPage: VFC = memo(() => {
     }else {
       try {
         setLoading(true);
+        console.log("before")
         await login(emailRef.current.value, passwordRef.current.value);
+        console.log("after")
         navigate("/");
       } catch (e:any) {
+        console.log({e, message:"catch"})
         setError(e.message);
         setLoading(false);
       }
     }
   };
+  console.log(error)
 
   return (
     <>

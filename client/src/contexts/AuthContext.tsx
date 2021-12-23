@@ -29,7 +29,7 @@ interface AuthContextProps {
   logout:()=> Promise<void>;
   signup:(email: string, password: string) => Promise<UserCredential>;
   // resetPassword,
-  setDisplayName:(name: string) => Promise<void> | undefined;
+  setDisplayName:(name: string ) => Promise<void> | undefined;
   setEmail:(newEmail: string) => Promise<void> | undefined;
   setPassword:(newPassword: string) => Promise<void> | undefined;
 }

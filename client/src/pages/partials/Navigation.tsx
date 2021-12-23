@@ -23,13 +23,23 @@ export const Navigation: VFC = memo(() => {
           <Nav className="ms-auto">
             {currentUser ? (
               <>
+                <NavLink to="/" className="nav-link text-info ">
+                  <FontAwesomeIcon
+                    icon={faHome}
+                    size="lg"
+                    className="text-info"
+                  />
+                </NavLink>
+
                 <NavDropdown
                   title={
-                    <FontAwesomeIcon
-                      icon={faUser}
-                      size="lg"
-                      className="text-info"
-                    />
+                    currentUser.displayName ?? (
+                      <FontAwesomeIcon
+                        icon={faUser}
+                        size="lg"
+                        className="text-info"
+                      />
+                    )
                   }
                   id="basic-nav-dropdown"
                   drop="start"
@@ -45,13 +55,6 @@ export const Navigation: VFC = memo(() => {
                     Log Out
                   </NavLink>
                 </NavDropdown>
-                <NavLink to="/" className="nav-link text-info">
-                  <FontAwesomeIcon
-                    icon={faHome}
-                    size="lg"
-                    className="text-info"
-                  />
-                </NavLink>
               </>
             ) : (
               <>
