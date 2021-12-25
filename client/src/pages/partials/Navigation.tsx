@@ -48,7 +48,7 @@ export const Navigation: VFC = memo(() => {
                     Update Profile
                   </NavLink>
                   <NavLink to="/register-child" className="dropdown-item">
-                    Register Child
+                    Add Child
                   </NavLink>
                   <NavDropdown.Divider />
                   <NavLink to="/logout" className="dropdown-item ">

@@ -1,4 +1,4 @@
-import { memo, VFC, useState } from "react";
+import { memo, VFC } from "react";
 import {useNavigate } from "react-router-dom";
 import { Row, Col, Button, Card } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -7,17 +7,23 @@ import {
   faEdit,
   faArrowCircleRight,
 } from "@fortawesome/free-solid-svg-icons";
-import "../App.scss";
+import "../scss/App.scss";
+import { DocumentData } from 'firebase/firestore'
 
-export const ChildCard: VFC = memo(() => {
-  const [loading, ] = useState(false);
+
+interface Props {
+  child: DocumentData
+}
+
+export const ChildCard: VFC<Props> = memo(({child }) => {
+
   const navigate = useNavigate();
 
   const handleCardOnClick = (
     e: React.MouseEvent<SVGSVGElement, MouseEvent>
   ) => {
     e.stopPropagation();
-    navigate("/child-history/1");
+    navigate(`/child-history/${child._id}`);
   };
 
   const handleEditOnClick = (
@@ -43,7 +49,7 @@ export const ChildCard: VFC = memo(() => {
                     />
                   </Col>
                   <Col xs={{ span: 3 }} className="align-self-center">
-                    <h4>Name</h4>
+                    <h4>{child.name}</h4>
                   </Col>
                   <Col
                     xs={{ span: 1 }}
@@ -80,25 +86,26 @@ export const ChildCard: VFC = memo(() => {
                 </Row>
                 <Row className="mb-2">
                   <Col xs={{span:3, offset:2}}md={{ span: 3, offset: 2 }}>
-                    <h6>Monthly</h6>
+                    {child.weekly?<h6>Weekly</h6>:<h6>Monthly</h6>}
+                    {child.isPaused &&<h6>Paused</h6>}
                   </Col>
                   <Col xs={{span:3, offset:3}} md={{ span: 3, offset: 2 }}>
-                    <h6>25 kr</h6>
+                    <h6>{child.price}{" "}kr</h6>
                   </Col>
                 </Row>
                 <Row className="mb-2">
                   <Col xs={{ span: 10, offset: 2 }} md={{ span: 7, offset: 2 }}>
-                    <h6>Next Allowance in 2days +25kr</h6>
+                    <h6>{`Next Allowance in 2days +${child.price} kr`}</h6>
                   </Col>
                   <Col className="text-center mt-3">
                     <Button
-                      disabled={loading}
+                      // disabled={isLoading}
                       variant="danger"
                       size="sm"
                       type="submit"
                       className="text-info"
                     >
-                      Pause
+                     {child.isPaused?<>Start</> :<>Pause</> }
                     </Button>
                   </Col>
                 </Row>

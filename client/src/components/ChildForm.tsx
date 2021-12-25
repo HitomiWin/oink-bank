@@ -2,7 +2,7 @@ import React, { useRef, useState, VFC, memo } from "react";
 import { Row, Col, Form, Button, Card, Alert } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUserCircle } from "@fortawesome/free-solid-svg-icons";
-import "../App.scss";
+import "../scss/App.scss";
 
 export const ChildForm: VFC = memo(() => {
   const nameRef = useRef<HTMLInputElement>(null);

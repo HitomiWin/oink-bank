@@ -4,7 +4,7 @@ import { BrowserRouter } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import AuthContextProvider from './contexts/AuthContext'
 import 'bootstrap/dist/css/bootstrap.min.css';
-import './App.scss'
+import './scss/App.scss'
 import {App} from './App';
 
 const queryClient = new QueryClient({
