@@ -22,19 +22,19 @@ export const ChildCard: VFC<Props> = memo(({ child }) => {
     e: React.MouseEvent<SVGSVGElement, MouseEvent>
   ) => {
     e.stopPropagation();
-    navigate(`/child-history/${child._id}`);
+    navigate(`/child-history/${child._id}`, { state: child });
   };
 
   const handleEditOnClick = (
     e: React.MouseEvent<SVGSVGElement, MouseEvent>
   ) => {
     e.stopPropagation();
-    navigate("/edit-child/1");
+    navigate(`/edit-child/${child._id}`, { state: child });
   };
 
   const start = moment();
   const end = moment(child.nextDate);
-  const diffDays = end.diff(start,'days')+1
+  const diffDays = end.diff(start, "days") + 1;
 
   return (
     <>

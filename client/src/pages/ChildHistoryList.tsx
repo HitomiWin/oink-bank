@@ -1,4 +1,5 @@
 import { memo, VFC } from "react";
+import {useLocation} from 'react-router-dom';
 import { Row, Col, Card, Button, Form } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -8,6 +9,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { HistoryCard } from "../components/HistoryCard";
 export const ChildHistoryList: VFC = memo(() => {
+  const location = useLocation();
   return (
     <>
       <Row>
@@ -21,7 +23,7 @@ export const ChildHistoryList: VFC = memo(() => {
               <FontAwesomeIcon icon={faUserCircle} color="#f0ad4e" size="3x" />
             </Col>
             <Col xs={{ span: 3 }} md={{ span: 2 }}>
-              <h5> Name </h5>
+              <h3> {location.state.name} </h3>
             </Col>
             <Col xs={{ span: 4, offset: 2 }} md={{ span: 3, offset: 4 }}>
               <Col>

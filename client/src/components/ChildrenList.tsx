@@ -3,7 +3,7 @@ import "../scss/App.scss";
 import { Alert } from "react-bootstrap";
 import { DocumentData } from "firebase/firestore";
 import { ChildCard } from "./ChildCard";
-import useChildren from "../hooks/useChildren";
+import useChildren from "../hooks/useGetChildren";
 
 export const ChildrenList: VFC = memo(() => {
 
