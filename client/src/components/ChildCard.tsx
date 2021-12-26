@@ -1,5 +1,5 @@
 import { memo, VFC } from "react";
-import {useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Row, Col, Button, Card } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -8,15 +8,14 @@ import {
   faArrowCircleRight,
 } from "@fortawesome/free-solid-svg-icons";
 import "../scss/App.scss";
-import { DocumentData } from 'firebase/firestore'
-
+import { DocumentData } from "firebase/firestore";
+import moment from "moment";
 
 interface Props {
-  child: DocumentData
+  child: DocumentData;
 }
 
-export const ChildCard: VFC<Props> = memo(({child }) => {
-
+export const ChildCard: VFC<Props> = memo(({ child }) => {
   const navigate = useNavigate();
 
   const handleCardOnClick = (
@@ -33,10 +32,18 @@ export const ChildCard: VFC<Props> = memo(({child }) => {
     navigate("/edit-child/1");
   };
 
+  const start = moment();
+  const end = moment(child.nextDate);
+  const diffDays = end.diff(start,'days')+1
+
   return (
     <>
       <Row className="my-2">
-        <Col xs={{ span: 12 }} md={{ span: 8, offset: 2 }} lg={{span:6, offset:3}}>
+        <Col
+          xs={{ span: 12 }}
+          md={{ span: 8, offset: 2 }}
+          lg={{ span: 6, offset: 3 }}
+        >
           <Card className="rounded-lg">
             <Card.Body>
               <Col md={{ span: 12 }}>
@@ -64,7 +71,7 @@ export const ChildCard: VFC<Props> = memo(({child }) => {
                     />
                   </Col>
                   <Col
-                    xs={{ span: 1, offset: 4}}
+                    xs={{ span: 1, offset: 4 }}
                     md={{ span: 1, offset: 5 }}
                     className="align-self-start"
                   >
@@ -77,25 +84,25 @@ export const ChildCard: VFC<Props> = memo(({child }) => {
                   </Col>
                 </Row>
                 <Row className="mb-2 ">
-                  <Col xs={{span:3, offset:2}}md={{ span: 3, offset: 2 }}>
+                  <Col xs={{ span: 3, offset: 2 }} md={{ span: 3, offset: 2 }}>
                     <h5>Total</h5>
                   </Col>
-                  <Col xs={{span:3, offset:3}} md={{ span: 3, offset: 2 }}>
+                  <Col xs={{ span: 3, offset: 3 }} md={{ span: 3, offset: 2 }}>
                     <h5>500 kr</h5>
                   </Col>
                 </Row>
                 <Row className="mb-2">
-                  <Col xs={{span:3, offset:2}}md={{ span: 3, offset: 2 }}>
-                    {child.weekly?<h6>Weekly</h6>:<h6>Monthly</h6>}
-                    {child.isPaused &&<h6>Paused</h6>}
+                  <Col xs={{ span: 3, offset: 2 }} md={{ span: 3, offset: 2 }}>
+                    {child.weekly ? <h6>Weekly</h6> : <h6>Monthly</h6>}
+                    {child.isPaused && <h6>Paused</h6>}
                   </Col>
-                  <Col xs={{span:3, offset:3}} md={{ span: 3, offset: 2 }}>
-                    <h6>{child.price}{" "}kr</h6>
+                  <Col xs={{ span: 3, offset: 3 }} md={{ span: 3, offset: 2 }}>
+                    <h6>{child.price} kr</h6>
                   </Col>
                 </Row>
                 <Row className="mb-2">
                   <Col xs={{ span: 10, offset: 2 }} md={{ span: 7, offset: 2 }}>
-                    <h6>{`Next Allowance in 2days +${child.price} kr`}</h6>
+                    <h6>{`Next Allowance in ${diffDays} day(s) +${child.price} kr`}</h6>
                   </Col>
                   <Col className="text-center mt-3">
                     <Button
@@ -105,7 +112,7 @@ export const ChildCard: VFC<Props> = memo(({child }) => {
                       type="submit"
                       className="text-info"
                     >
-                     {child.isPaused?<>Start</> :<>Pause</> }
+                      {child.isPaused ? <>Start</> : <>Pause</>}
                     </Button>
                   </Col>
                 </Row>

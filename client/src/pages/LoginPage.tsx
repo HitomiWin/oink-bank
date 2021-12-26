@@ -19,18 +19,14 @@ export const LoginPage: VFC = memo(() => {
     }else {
       try {
         setLoading(true);
-        console.log("before")
         await login(emailRef.current.value, passwordRef.current.value);
-        console.log("after")
         navigate("/");
       } catch (e:any) {
-        console.log({e, message:"catch"})
         setError(e.message);
         setLoading(false);
       }
     }
   };
-  console.log(error)
 
   return (
     <>
