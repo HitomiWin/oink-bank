@@ -55,6 +55,7 @@ export const ChildForm: VFC = memo(() => {
         .isoWeekday(monday)
         .format("YYYY-MM-DD");
     }
+    console.log(nextMonday)
 
     let nextDate =
       radioValue === "1"

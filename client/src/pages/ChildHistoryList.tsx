@@ -1,5 +1,4 @@
 import { memo, VFC } from "react";
-import {useLocation} from 'react-router-dom';
 import { Row, Col, Card, Button, Form } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -7,9 +6,24 @@ import {
   faPlusCircle,
   faMinusCircle,
 } from "@fortawesome/free-solid-svg-icons";
+import { useParams } from "react-router-dom";
+import { Alert } from "react-bootstrap";
+
+import useGetChild from "../hooks/useGetChild";
 import { HistoryCard } from "../components/HistoryCard";
+
 export const ChildHistoryList: VFC = memo(() => {
-  const location = useLocation();
+  const { id } = useParams();
+
+  const childQuery = useGetChild(id ?? "");
+
+  if (childQuery.isError) {
+    return <Alert variant="warning">{childQuery.error}</Alert>;
+  }
+
+  if (childQuery.isLoading) {
+    return <p>Loading...</p>;
+  }
   return (
     <>
       <Row>
@@ -23,7 +37,7 @@ export const ChildHistoryList: VFC = memo(() => {
               <FontAwesomeIcon icon={faUserCircle} color="#f0ad4e" size="3x" />
             </Col>
             <Col xs={{ span: 3 }} md={{ span: 2 }}>
-              <h3> {location.state.name} </h3>
+              <h3>{childQuery.data?.name}  </h3>
             </Col>
             <Col xs={{ span: 4, offset: 2 }} md={{ span: 3, offset: 4 }}>
               <Col>

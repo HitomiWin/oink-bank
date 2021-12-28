@@ -1,14 +1,25 @@
 import { memo, VFC } from "react";
-import { useLocation } from 'react-router-dom'
-import { ChildForm } from "../components/ChildForm";
+import { ChildEditForm } from "../components/ChildEditForm";
+import { useParams } from "react-router-dom";
+import { Alert } from "react-bootstrap";
+
+import useGetChild from "../hooks/useGetChild";
+
 export const EditChild: VFC = memo(() => {
-  const location =useLocation()
-  return (
+  const { id } = useParams();
+  const childQuery = useGetChild(id ?? "");
+
+  if (childQuery.isError) {
+    return <Alert variant="warning">{childQuery.error}</Alert>;
+  }
+
+  if (childQuery.isLoading) {
+    return <p>Loading...</p>;
+  }
+  return childQuery.isSuccess && childQuery.data ?(
     <>
-    <h3 className='text-center'>
-      {location.state.name}
-    </h3>
-    <ChildForm />
+   <h3 className="text-center">Edit {childQuery.data.name} </h3>
+      <ChildEditForm id={id} child={childQuery.data} />
     </>
-  );
-});  
+  ):<p>No child</p>;
+});

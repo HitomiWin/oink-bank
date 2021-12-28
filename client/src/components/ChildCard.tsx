@@ -8,7 +8,8 @@ import {
   faArrowCircleRight,
 } from "@fortawesome/free-solid-svg-icons";
 import "../scss/App.scss";
-import { DocumentData } from "firebase/firestore";
+import { DocumentData, doc, updateDoc } from "firebase/firestore";
+import { db } from "../firebase";
 import moment from "moment";
 
 interface Props {
@@ -22,14 +23,24 @@ export const ChildCard: VFC<Props> = memo(({ child }) => {
     e: React.MouseEvent<SVGSVGElement, MouseEvent>
   ) => {
     e.stopPropagation();
-    navigate(`/child-history/${child._id}`, { state: child });
+    navigate(`/child-history/${child.id}`);
   };
 
   const handleEditOnClick = (
     e: React.MouseEvent<SVGSVGElement, MouseEvent>
   ) => {
     e.stopPropagation();
-    navigate(`/edit-child/${child._id}`, { state: child });
+    navigate(`/edit-child/${child.id}`);
+  };
+
+  const handlePauseOnClick = async (
+    e: React.MouseEvent<HTMLElement, MouseEvent>
+  ) => {
+    e.stopPropagation();
+    const ref = doc(db, "children", child.id);
+    await updateDoc(ref, {
+      isPaused: !child.isPaused,
+    });
   };
 
   const start = moment();
@@ -94,7 +105,6 @@ export const ChildCard: VFC<Props> = memo(({ child }) => {
                 <Row className="mb-2">
                   <Col xs={{ span: 3, offset: 2 }} md={{ span: 3, offset: 2 }}>
                     {child.weekly ? <h6>Weekly</h6> : <h6>Monthly</h6>}
-                    {child.isPaused && <h6>Paused</h6>}
                   </Col>
                   <Col xs={{ span: 3, offset: 3 }} md={{ span: 3, offset: 2 }}>
                     <h6>{child.price} kr</h6>
@@ -102,17 +112,21 @@ export const ChildCard: VFC<Props> = memo(({ child }) => {
                 </Row>
                 <Row className="mb-2">
                   <Col xs={{ span: 10, offset: 2 }} md={{ span: 7, offset: 2 }}>
-                    <h6>{`Next Allowance in ${diffDays} day(s) +${child.price} kr`}</h6>
+                    {child.isPaused ? (
+                      <h6 className="text-danger">Paused</h6>
+                    ) : (
+                      <h6>{`Next Allowance in ${diffDays} day(s) +${child.price} kr`}</h6>
+                    )}
                   </Col>
                   <Col className="text-center mt-3">
                     <Button
                       // disabled={isLoading}
                       variant="danger"
                       size="sm"
-                      type="submit"
+                      onClick={handlePauseOnClick}
                       className="text-info"
                     >
-                      {child.isPaused ? <>Start</> : <>Pause</>}
+                      {child.isPaused ? <>Re Start ?</> : <>Pause</>}
                     </Button>
                   </Col>
                 </Row>
