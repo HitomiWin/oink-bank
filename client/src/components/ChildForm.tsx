@@ -131,7 +131,7 @@ export const ChildForm: VFC = memo(() => {
                       <Form.Label>Price</Form.Label>
                     </Col>
                     <Col>
-                      <Form.Control type="number" ref={priceRef} required />
+                      <Form.Control type="number" min="1" ref={priceRef} required />
                     </Col>
                     <Col xs={2} className="d-flex">
                       <p className="mb-0 align-self-end">Kr</p>
