@@ -9,13 +9,13 @@ import {
 import { useParams } from "react-router-dom";
 import { Alert } from "react-bootstrap";
 
-import useGetChild from "../hooks/useGetChild";
+import useGetDocument from "../hooks/useGetDocument";
 import { HistoryCard } from "../components/HistoryCard";
 
 export const ChildHistoryList: VFC = memo(() => {
   const { id } = useParams();
 
-  const childQuery = useGetChild(id ?? "");
+  const childQuery = useGetDocument('children', id ?? "");
 
   if (childQuery.isError) {
     return <Alert variant="warning">{childQuery.error}</Alert>;

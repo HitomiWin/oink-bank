@@ -11,12 +11,16 @@ import "../scss/App.scss";
 import { DocumentData, doc, updateDoc } from "firebase/firestore";
 import { db } from "../firebase";
 import moment from "moment";
+import useAddEvents from "../hooks/useAddEvents";
 
 interface Props {
   child: DocumentData;
 }
 
 export const ChildCard: VFC<Props> = memo(({ child }) => {
+
+   useAddEvents(child)
+
   const navigate = useNavigate();
 
   const handleCardOnClick = (
