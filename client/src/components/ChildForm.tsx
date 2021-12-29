@@ -1,6 +1,6 @@
 import React, { useRef, useState, VFC, memo } from "react";
 import { useNavigate } from "react-router-dom";
-import { collection, addDoc } from "firebase/firestore";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import {
   Row,
   Col,
@@ -55,7 +55,6 @@ export const ChildForm: VFC = memo(() => {
         .isoWeekday(monday)
         .format("YYYY-MM-DD");
     }
-    console.log(nextMonday)
 
     let nextDate =
       radioValue === "1"
@@ -64,18 +63,23 @@ export const ChildForm: VFC = memo(() => {
     try {
       await addDoc(collection(db, "children"), {
         name: nameRef.current.value,
-        price: priceRef.current.value,
+        price: parseInt(priceRef.current.value, 10),
         parent: currentUser?.uid,
         weekly: radioValue === "1" ? true : false,
         isPaused: false,
         nextDate,
+        created: serverTimestamp()
       });
       navigate("/");
     } catch (e: any) {
       setError(e.message);
     } finally {
-      nameRef.current.value = "";
-      priceRef.current.value = "";
+     if( nameRef.current) {
+       nameRef.current.value = "";
+     }
+     if(priceRef.current){
+       priceRef.current.value = "";
+     }
       setRadioValue("1");
       setLoading(false);
     }

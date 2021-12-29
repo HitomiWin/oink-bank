@@ -1,12 +1,17 @@
 import { memo, VFC } from "react";
 import { ChildEditForm } from "../components/ChildEditForm";
 import { useParams } from "react-router-dom";
+import {Alert} from "react-bootstrap";
 import useGetDocument from "../hooks/useGetDocument";
 
 
 export const EditChild: VFC = memo(() => {
   const { id } = useParams();
   const childQuery = useGetDocument('children', id??"" );
+
+  if(childQuery.isError){
+    return <Alert variant="warning">{childQuery.error}</Alert>
+  }
 
   if (childQuery.isLoading) {
     return <p>Loading...</p>;
