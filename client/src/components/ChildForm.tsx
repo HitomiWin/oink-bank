@@ -68,6 +68,8 @@ export const ChildForm: VFC = memo(() => {
         weekly: radioValue === "1" ? true : false,
         isPaused: false,
         nextDate,
+        lastDate: moment().format("YYYY-MM-DD"),
+        total:0,
         created: serverTimestamp()
       });
       navigate("/");

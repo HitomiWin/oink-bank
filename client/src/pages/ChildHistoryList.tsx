@@ -17,6 +17,8 @@ export const ChildHistoryList: VFC = memo(() => {
 
   const childQuery = useGetDocument('children', id ?? "");
 
+  const child =childQuery.data ?? null 
+
   if (childQuery.isError) {
     return <Alert variant="warning">{childQuery.error}</Alert>;
   }
@@ -24,7 +26,7 @@ export const ChildHistoryList: VFC = memo(() => {
   if (childQuery.isLoading) {
     return <p>Loading...</p>;
   }
-  return (
+  return child ? (
     <>
       <Row>
         <Col
@@ -37,14 +39,14 @@ export const ChildHistoryList: VFC = memo(() => {
               <FontAwesomeIcon icon={faUserCircle} color="#f0ad4e" size="3x" />
             </Col>
             <Col xs={{ span: 3 }} md={{ span: 2 }}>
-              <h3>{childQuery.data?.name}  </h3>
+              <h3>{child.name}  </h3>
             </Col>
             <Col xs={{ span: 4, offset: 2 }} md={{ span: 3, offset: 4 }}>
               <Col>
                 <h5>Total</h5>
               </Col>
               <Col>
-                <h4>500 kr</h4>
+                <h4>{child.total} kr</h4>
               </Col>
             </Col>
           </Row>
@@ -94,5 +96,5 @@ export const ChildHistoryList: VFC = memo(() => {
         </Col>
       </Row>
     </>
-  );
+  ): <p>No child</p>;
 });

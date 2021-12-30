@@ -84,7 +84,7 @@ export const ChildEditForm: VFC<Props> = memo(({ id, child }) => {
       navigate("/");
       nameRef.current.value = "";
       priceRef.current.value = "";
-      setRadioValue("");
+      setRadioValue(child.weekly?"1":"2");
     }
   };
 

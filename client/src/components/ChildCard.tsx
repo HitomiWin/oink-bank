@@ -18,8 +18,8 @@ interface Props {
 }
 
 export const ChildCard: VFC<Props> = memo(({ child }) => {
-
-   useAddEvents(child)
+  const isRegular = true;
+  useAddEvents(child, isRegular);
 
   const navigate = useNavigate();
 
@@ -103,7 +103,7 @@ export const ChildCard: VFC<Props> = memo(({ child }) => {
                     <h5>Total</h5>
                   </Col>
                   <Col xs={{ span: 3, offset: 3 }} md={{ span: 3, offset: 2 }}>
-                    <h5>500 kr</h5>
+                    <h5>{child.total} kr</h5>
                   </Col>
                 </Row>
                 <Row className="mb-2">

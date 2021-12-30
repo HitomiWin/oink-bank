@@ -4,8 +4,8 @@ import { doc, onSnapshot, DocumentData } from 'firebase/firestore'
 
 const useGetDocument = (col:string, id:string) => {
   
-	const [isLoading, setIsLoading] = useState(true)
-  const [isError, setIsError] =useState(false)
+	const [isLoading, setIsLoading] = useState<boolean | null>(null)
+  const [isError, setIsError] =useState<boolean | null>(null)
   const [error,setError] = useState<string | null>(null)
 	const [data, setData] = useState<DocumentData| null>(null)
 
@@ -39,7 +39,10 @@ const useGetDocument = (col:string, id:string) => {
   useEffect(() => {
     getDoc()
     return () => {
-      getDoc()
+      setIsLoading(null)
+      setIsError(null)
+      setError(null)
+      setData(null)
     }
    // eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [col,id])
