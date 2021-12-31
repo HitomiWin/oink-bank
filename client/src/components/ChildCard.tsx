@@ -1,4 +1,4 @@
-import { memo, VFC } from "react";
+import { memo, VFC, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Row, Col, Button, Card } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -18,9 +18,13 @@ interface Props {
 }
 
 export const ChildCard: VFC<Props> = memo(({ child }) => {
+  const {addEvents}= useAddEvents();
   const isRegular = true;
-  useAddEvents(child, isRegular);
-
+  
+  useEffect(() => {
+   addEvents(child,child.id, isRegular, child.price)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [child, isRegular, child.price])
   const navigate = useNavigate();
 
   const handleCardOnClick = (

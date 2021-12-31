@@ -70,7 +70,7 @@ export const ChildEditForm: VFC<Props> = memo(({ id, child }) => {
       mutation.mutate({
         name: nameRef.current.value.length ? nameRef.current.value : child.name,
         price: priceRef.current.value.length
-          ? parseInt(priceRef.current.value, 10)
+          ? parseInt(priceRef.current.value)
           : child.price,
         parent: currentUser?.uid,
         weekly: radioValue === "1" ? true : false,

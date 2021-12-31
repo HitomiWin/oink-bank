@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   collection,
   addDoc,
@@ -7,24 +7,30 @@ import {
   // orderBy,
   DocumentData,
 } from "firebase/firestore";
+import moment from "moment";
 import { db } from "../firebase";
 
-const useAddEvents = (child: DocumentData, isRegular: boolean) => {
+const useAddEvents = () => {
   const [error, setError] = useState<null | boolean>(null);
   const [isError, setIsError] = useState<null | boolean>(null);
   const [isLoading, setIsLoading] = useState<null | boolean>(null);
   const [isSuccess, setIsSuccess] = useState<null | boolean>(null);
 
-  const addEvents = async () => {
+  const addEvents = async (child: DocumentData, id:string, isRegular: boolean, price:number) => {
     setError(null);
     setIsError(null);
     setIsSuccess(null);
     setIsLoading(true);
 
-    try {
-      await addDoc(collection(db, "children", child.id, "events"), {
-        paymentDate: new Date(),
-        price: child.price,
+    try {isRegular?
+
+      await addDoc(collection(db, "children", id, "events"), {
+        paymentDate:  moment().format("YYYY-MM-DD"),
+        price,
+        isRegular,
+      }): await addDoc(collection(db,"children", id,"events"),{
+        paymentDate: moment().format("YYYY-MM-DD"),
+        price,
         isRegular,
       });
       setIsSuccess(true);
@@ -36,12 +42,7 @@ const useAddEvents = (child: DocumentData, isRegular: boolean) => {
       setIsSuccess(false);
     }
   };
-  useEffect(() => {
-    if (isRegular) {
-      addEvents();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [child]);
+
 
   return { error, isError, isLoading, isSuccess, addEvents };
 };
