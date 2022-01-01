@@ -129,7 +129,8 @@ export const ChildHistoryList: VFC = memo(() => {
 
           <h4 className="text-center my-4">History</h4>
           <Row>
-            <HistoryCard />
+            {id ?<HistoryCard id={id}/>: <Alert variant="danger">no ID</Alert>}
+    
           </Row>
         </Col>
       </Row>
