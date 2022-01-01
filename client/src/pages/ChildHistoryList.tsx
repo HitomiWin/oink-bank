@@ -8,10 +8,18 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { useParams } from "react-router-dom";
 import { Alert } from "react-bootstrap";
+import { DocumentData } from "firebase/firestore";
 
 import useGetDocument from "../hooks/useGetDocument";
 import { HistoryCard } from "../components/HistoryCard";
 import useAddEvents from "../hooks/useAddEvents";
+import useGetEvents from "../hooks/useGetEvents";
+
+interface Event {
+  id:string,
+  paymentDate:Date,
+  price:number
+}
 
 export const ChildHistoryList: VFC = memo(() => {
   const { id } = useParams();
@@ -21,8 +29,13 @@ export const ChildHistoryList: VFC = memo(() => {
 
   const child = childQuery.data ?? null;
   const eventsQuery = useAddEvents();
+  const getEventsQuery = useGetEvents(id ?? "");
+  const events = getEventsQuery.data?.docs.map((event :DocumentData) => {
+    return { id: event.id, ...event.data() };
+  });
+  console.log(events)
 
-  const handleOnSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleOnSubmit = async  (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const isRegular = false;
 
@@ -30,7 +43,7 @@ export const ChildHistoryList: VFC = memo(() => {
       return;
     }
     if (child && id) {
-      eventsQuery.addEvents(
+      await eventsQuery.addEvents(
         child,
         id,
         isRegular,
@@ -129,8 +142,14 @@ export const ChildHistoryList: VFC = memo(() => {
 
           <h4 className="text-center my-4">History</h4>
           <Row>
-            {id ?<HistoryCard id={id}/>: <Alert variant="danger">no ID</Alert>}
-    
+            {getEventsQuery.isError && (
+              <Alert variant="danger"> {getEventsQuery.error} </Alert>
+            )}
+            {getEventsQuery.isLoading && <p>Loading...</p>} 
+           
+              {events ? events.map((event:Event) => (
+                <HistoryCard key={event.id} event={event} />
+              )):<p>No History</p>}
           </Row>
         </Col>
       </Row>
