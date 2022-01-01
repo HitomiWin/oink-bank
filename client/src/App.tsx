@@ -8,8 +8,8 @@ import { LoginPage } from "./pages/LoginPage";
 import { LogoutPage } from "./pages/LogoutPage";
 import { SignupPage } from "./pages/SignupPage";
 import { UpdateProfilePage } from "./pages/UpdateProfilePage";
-import { RegisterChild } from "./pages/RegisterChild";
-import { EditChild } from "./pages/EditChild";
+import { AddChildPage } from "./pages/AddChildPage";
+import { EditChildPage } from "./pages/EditChildPage";
 import { ChildHistoryList } from "./pages/ChildHistoryList";
 import RequireAuth from "./components/RequireAuth";
 
@@ -43,7 +43,7 @@ export const App: VFC = memo(() => {
             path="/register-child"
             element={
               <RequireAuth redirectTo="/login">
-                <RegisterChild />
+                <AddChildPage />
               </RequireAuth>
             }
           />
@@ -51,7 +51,7 @@ export const App: VFC = memo(() => {
             path="/edit-child/:id"
             element={
               <RequireAuth redirectTo="/login">
-                <EditChild />
+                <EditChildPage />
               </RequireAuth>
             }
           />

@@ -1,6 +1,6 @@
 import React, { useRef, useState, VFC, memo } from "react";
 import { useNavigate } from "react-router-dom";
-import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { serverTimestamp } from "firebase/firestore";
 import {
   Row,
   Col,
@@ -13,17 +13,26 @@ import {
 } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUserCircle } from "@fortawesome/free-solid-svg-icons";
+import { DocumentData } from "firebase/firestore";
 import moment from "moment";
 import "../scss/App.scss";
 
-import { db } from "../firebase";
 import { useAuthContext } from "../contexts/AuthContext";
 
-export const ChildForm: VFC = memo(() => {
+interface ChildQuery {
+  error: boolean | null;
+  isError: boolean | null;
+  isLoading: boolean;
+  isSuccess: boolean | null;
+  addChild: (childInfo: DocumentData) => Promise<void>;
+}
+interface Props {
+  childQuery: ChildQuery;
+}
+
+export const AddChildForm: VFC<Props> = memo(({ childQuery }) => {
   const nameRef = useRef<HTMLInputElement>(null);
   const priceRef = useRef<HTMLInputElement>(null);
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false);
   const [radioValue, setRadioValue] = useState("1");
   const navigate = useNavigate();
   const { currentUser } = useAuthContext();
@@ -33,10 +42,8 @@ export const ChildForm: VFC = memo(() => {
     { name: "Monthly", value: "2" },
   ];
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setError(null);
-    setLoading(true);
     if (!nameRef.current || !priceRef.current) {
       return;
     }
@@ -60,30 +67,30 @@ export const ChildForm: VFC = memo(() => {
       radioValue === "1"
         ? nextMonday
         : moment().add(1, "M").startOf("month").format("YYYY-MM-DD"); // the first date of next month
-    try {
-      await addDoc(collection(db, "children"), {
-        name: nameRef.current.value,
-        price: parseInt(priceRef.current.value, 10),
-        parent: currentUser?.uid,
-        weekly: radioValue === "1" ? true : false,
-        isPaused: false,
-        nextDate,
-        lastDate: moment().format("YYYY-MM-DD"),
-        total:0,
-        created: serverTimestamp()
-      });
-      navigate("/");
-    } catch (e: any) {
-      setError(e.message);
-    } finally {
-     if( nameRef.current) {
-       nameRef.current.value = "";
-     }
-     if(priceRef.current){
-       priceRef.current.value = "";
-     }
+
+    childQuery.addChild({
+      name: nameRef.current.value,
+      price: parseInt(priceRef.current.value, 10),
+      parent: currentUser?.uid,
+      weekly: radioValue === "1" ? true : false,
+      isPaused: false,
+      nextDate,
+      lastDate: moment().format("YYYY-MM-DD"),
+      total: 0,
+      created: serverTimestamp(),
+    });
+
+    if (childQuery) {
+      if (nameRef.current) {
+        nameRef.current.value = "";
+      }
+      if (priceRef.current) {
+        priceRef.current.value = "";
+      }
       setRadioValue("1");
-      setLoading(false);
+    }
+    if (childQuery.isSuccess) {
+      navigate("/");
     }
   };
 
@@ -97,7 +104,10 @@ export const ChildForm: VFC = memo(() => {
         >
           <Card className="rounded-lg">
             <Card.Body>
-              {error && <Alert variant="danger">{error}</Alert>}
+              {childQuery.isError && (
+                <Alert variant="danger">{childQuery.error}</Alert>
+              )}
+              {childQuery.isSuccess && <Alert variant="success">Sucess!</Alert>}
 
               <Form onSubmit={handleSubmit}>
                 <Form.Group id="name" className="mb-3  text-secondary">
@@ -133,7 +143,12 @@ export const ChildForm: VFC = memo(() => {
                       <Form.Label>Price</Form.Label>
                     </Col>
                     <Col>
-                      <Form.Control type="number" min="1" ref={priceRef} required />
+                      <Form.Control
+                        type="number"
+                        min="1"
+                        ref={priceRef}
+                        required
+                      />
                     </Col>
                     <Col xs={2} className="d-flex">
                       <p className="mb-0 align-self-end">Kr</p>
@@ -175,7 +190,7 @@ export const ChildForm: VFC = memo(() => {
                 <Row>
                   <Col xs={{ span: 2, offset: 8 }} md={{ span: 2, offset: 10 }}>
                     <Button
-                      disabled={loading}
+                      disabled={childQuery.isLoading}
                       type="submit"
                       className="text-info mt-1"
                     >

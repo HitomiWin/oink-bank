@@ -1,7 +1,6 @@
 import React, { useRef, useState, VFC, memo } from "react";
 import { useNavigate } from "react-router-dom";
-import { useFirestoreDocumentMutation } from "@react-query-firebase/firestore";
-import { collection, DocumentData, doc } from "firebase/firestore";
+import { DocumentData } from "firebase/firestore";
 import {
   Row,
   Col,
@@ -16,26 +15,28 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUserCircle } from "@fortawesome/free-solid-svg-icons";
 import moment from "moment";
 import "../scss/App.scss";
-
-import { db } from "../firebase";
 import { useAuthContext } from "../contexts/AuthContext";
 
-interface Props {
-  id: string | undefined;
-  child: DocumentData;
+interface ChildQuery {
+  error: boolean | null;
+  isError: boolean | null;
+  isLoading: boolean;
+  isSuccess: boolean | null;
+  editChild: (id: string, childInfo: DocumentData) => Promise<void>;
 }
 
-export const ChildEditForm: VFC<Props> = memo(({ id, child }) => {
+interface Props {
+  id: string;
+  child: DocumentData;
+  childQuery: ChildQuery;
+}
+
+export const EditChildForm: VFC<Props> = memo(({ id, child, childQuery }) => {
   const nameRef = useRef<HTMLInputElement>(child.name);
   const priceRef = useRef<HTMLInputElement>(child.price);
   const [radioValue, setRadioValue] = useState(child.isWeekly ? "1" : "2");
   const navigate = useNavigate();
   const { currentUser } = useAuthContext();
-
-  const collectionRef = collection(db, "children");
-  const ref = doc(collectionRef, id);
-  const mutation = useFirestoreDocumentMutation<DocumentData>(ref);
-
   const radios = [
     { name: "Weekly", value: "1" },
     { name: "Monthly", value: "2" },
@@ -66,25 +67,28 @@ export const ChildEditForm: VFC<Props> = memo(({ id, child }) => {
         ? nextMonday
         : moment().add(1, "M").startOf("month").format("YYYY-MM-DD"); // the first date of next month
 
-    try {
-      mutation.mutate({
-        name: nameRef.current.value.length ? nameRef.current.value : child.name,
-        price: priceRef.current.value.length
-          ? parseInt(priceRef.current.value)
-          : child.price,
-        parent: currentUser?.uid,
-        weekly: radioValue === "1" ? true : false,
-        isPaused: false,
-        nextDate,
-        created: child.created,
-      });
-    } catch (e: any) {
-      console.log(e);
-    } finally {
+    childQuery.editChild(id, {
+      name: nameRef.current.value.length ? nameRef.current.value : child.name,
+      price: priceRef.current.value.length
+        ? parseInt(priceRef.current.value)
+        : child.price,
+      parent: currentUser?.uid,
+      weekly: radioValue === "1" ? true : false,
+      isPaused: false,
+      nextDate,
+      created: child.created,
+    });
+    if (childQuery) {
+      if (nameRef.current) {
+        nameRef.current.value = "";
+      }
+      if (priceRef.current) {
+        priceRef.current.value = "";
+      }
+      setRadioValue(child.isWeekly ? "1" : "2");
+    }
+    if (childQuery.isSuccess) {
       navigate("/");
-      nameRef.current.value = "";
-      priceRef.current.value = "";
-      setRadioValue(child.weekly?"1":"2");
     }
   };
 
@@ -98,10 +102,13 @@ export const ChildEditForm: VFC<Props> = memo(({ id, child }) => {
         >
           <Card className="rounded-lg">
             <Card.Body>
-              {mutation.isError && (
-                <Alert variant="danger">{mutation.error.message}</Alert>
+             
+            {childQuery.isError && (
+                <Alert variant="danger">{childQuery.error}</Alert>
               )}
-
+            {childQuery.isSuccess && (
+                <Alert variant="success">Sucess!</Alert>
+              )}
               <Form onSubmit={handleSubmit}>
                 <Form.Group id="name" className="mb-3  text-secondary">
                   <Row>
@@ -187,7 +194,7 @@ export const ChildEditForm: VFC<Props> = memo(({ id, child }) => {
                 <Row>
                   <Col xs={{ span: 2, offset: 8 }} md={{ span: 2, offset: 10 }}>
                     <Button
-                      disabled={mutation.isLoading}
+                      disabled={childQuery.isLoading}
                       type="submit"
                       className="text-info mt-1"
                     >

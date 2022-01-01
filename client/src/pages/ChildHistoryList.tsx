@@ -19,8 +19,8 @@ export const ChildHistoryList: VFC = memo(() => {
 
   const childQuery = useGetDocument("children", id ?? "");
 
-  const child = childQuery.data ??null;
-  const { addEvents, isLoading } = useAddEvents();
+  const child = childQuery.data ?? null;
+  const eventsQuery = useAddEvents();
 
   const handleOnSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -30,7 +30,12 @@ export const ChildHistoryList: VFC = memo(() => {
       return;
     }
     if (child && id) {
-      addEvents(child, id, isRegular, parseInt(priceRef.current.value));
+      eventsQuery.addEvents(
+        child,
+        id,
+        isRegular,
+        parseInt(priceRef.current.value)
+      );
     }
   };
 
@@ -41,7 +46,11 @@ export const ChildHistoryList: VFC = memo(() => {
   if (childQuery.isLoading) {
     return <p>Loading...</p>;
   }
-  return child ? (
+
+  if (eventsQuery && priceRef.current) {
+    priceRef.current.value = "";
+  }
+  return eventsQuery && child ? (
     <>
       <Row>
         <Col
@@ -67,6 +76,12 @@ export const ChildHistoryList: VFC = memo(() => {
           </Row>
           <Card className="mt-3">
             <Card.Body>
+              {eventsQuery.isError && (
+                <Alert variant="danger"> {eventsQuery.error} </Alert>
+              )}
+              {eventsQuery.isSuccess && (
+                <Alert variant="success">Sucsess!</Alert>
+              )}
               <Card.Title className="text-secondary text-center mb-4">
                 Add or Reduce
               </Card.Title>
@@ -100,7 +115,7 @@ export const ChildHistoryList: VFC = memo(() => {
                       <Button
                         type="submit"
                         variant="primary"
-                        disabled={isLoading===true}
+                        disabled={eventsQuery.isLoading === true}
                         className="text-info"
                       >
                         Save
@@ -111,6 +126,7 @@ export const ChildHistoryList: VFC = memo(() => {
               </Form>
             </Card.Body>
           </Card>
+
           <h4 className="text-center my-4">History</h4>
           <Row>
             <HistoryCard />
