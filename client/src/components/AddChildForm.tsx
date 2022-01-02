@@ -22,7 +22,7 @@ import { useAuthContext } from "../contexts/AuthContext";
 interface ChildQuery {
   error: boolean | null;
   isError: boolean | null;
-  isLoading: boolean;
+  isLoading: boolean | undefined;
   isSuccess: boolean | null;
   addChild: (childInfo: DocumentData) => Promise<void>;
 }
@@ -42,7 +42,7 @@ export const AddChildForm: VFC<Props> = memo(({ childQuery }) => {
     { name: "Monthly", value: "2" },
   ];
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!nameRef.current || !priceRef.current) {
       return;
@@ -68,7 +68,7 @@ export const AddChildForm: VFC<Props> = memo(({ childQuery }) => {
         ? nextMonday
         : moment().add(1, "M").startOf("month").format("YYYY-MM-DD"); // the first date of next month
 
-    childQuery.addChild({
+     await childQuery.addChild({
       name: nameRef.current.value,
       price: parseInt(priceRef.current.value, 10),
       parent: currentUser?.uid,
@@ -80,18 +80,12 @@ export const AddChildForm: VFC<Props> = memo(({ childQuery }) => {
       created: serverTimestamp(),
     });
 
-    if (childQuery) {
-      if (nameRef.current) {
         nameRef.current.value = "";
-      }
-      if (priceRef.current) {
         priceRef.current.value = "";
-      }
-      setRadioValue("1");
-    }
-    if (childQuery.isSuccess) {
-      navigate("/");
-    }
+        setRadioValue("1");
+        navigate("/");
+      
+    
   };
 
   return (
@@ -107,7 +101,6 @@ export const AddChildForm: VFC<Props> = memo(({ childQuery }) => {
               {childQuery.isError && (
                 <Alert variant="danger">{childQuery.error}</Alert>
               )}
-              {childQuery.isSuccess && <Alert variant="success">Sucess!</Alert>}
 
               <Form onSubmit={handleSubmit}>
                 <Form.Group id="name" className="mb-3  text-secondary">

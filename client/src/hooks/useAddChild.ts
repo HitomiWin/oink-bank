@@ -1,22 +1,21 @@
 import { useState } from "react";
-import { collection, addDoc,DocumentData} from "firebase/firestore";
+import { collection, addDoc, DocumentData } from "firebase/firestore";
 
 import { db } from "../firebase";
 
 const useAddChild = () => {
   const [error, setError] = useState<null | boolean>(null);
   const [isError, setIsError] = useState<null | boolean>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean | undefined>();
   const [isSuccess, setIsSuccess] = useState<null | boolean>(null);
 
-  const addChild = async (childInfo:DocumentData) => {
+  const addChild = async (childInfo: DocumentData) => {
     setError(null);
     setIsError(null);
     setIsSuccess(null);
     setIsLoading(true);
 
     try {
-
       await addDoc(collection(db, "children"), childInfo);
       setIsSuccess(true);
       setIsLoading(false);
@@ -27,7 +26,6 @@ const useAddChild = () => {
       setIsSuccess(false);
     }
   };
-
 
   return { error, isError, isLoading, isSuccess, addChild };
 };

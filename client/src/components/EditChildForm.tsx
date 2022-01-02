@@ -15,34 +15,27 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUserCircle } from "@fortawesome/free-solid-svg-icons";
 import moment from "moment";
 import "../scss/App.scss";
-import { useAuthContext } from "../contexts/AuthContext";
-
-interface ChildQuery {
-  error: boolean | null;
-  isError: boolean | null;
-  isLoading: boolean;
-  isSuccess: boolean | null;
-  editChild: (id: string, childInfo: DocumentData) => Promise<void>;
-}
+// import { useAuthContext } from "../contexts/AuthContext";
+import useEditChild from "../hooks/useEditChild";
 
 interface Props {
   id: string;
   child: DocumentData;
-  childQuery: ChildQuery;
 }
 
-export const EditChildForm: VFC<Props> = memo(({ id, child, childQuery }) => {
+export const EditChildForm: VFC<Props> = memo(({ id, child }) => {
+  const mutation = useEditChild(id);
   const nameRef = useRef<HTMLInputElement>(child.name);
   const priceRef = useRef<HTMLInputElement>(child.price);
   const [radioValue, setRadioValue] = useState(child.isWeekly ? "1" : "2");
   const navigate = useNavigate();
-  const { currentUser } = useAuthContext();
+  // const { currentUser } = useAuthContext();
   const radios = [
     { name: "Weekly", value: "1" },
     { name: "Monthly", value: "2" },
   ];
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!nameRef.current || !priceRef.current) {
       return;
@@ -67,27 +60,20 @@ export const EditChildForm: VFC<Props> = memo(({ id, child, childQuery }) => {
         ? nextMonday
         : moment().add(1, "M").startOf("month").format("YYYY-MM-DD"); // the first date of next month
 
-    childQuery.editChild(id, {
+    await mutation.mutate({
       name: nameRef.current.value.length ? nameRef.current.value : child.name,
       price: priceRef.current.value.length
         ? parseInt(priceRef.current.value)
         : child.price,
-      parent: currentUser?.uid,
       weekly: radioValue === "1" ? true : false,
-      isPaused: false,
       nextDate,
-      created: child.created,
     });
-    if (childQuery) {
-      if (nameRef.current) {
-        nameRef.current.value = "";
-      }
-      if (priceRef.current) {
-        priceRef.current.value = "";
-      }
+    console.log(mutation);
+
+    if (mutation.isSuccess) {
+      nameRef.current.value = "";
+      priceRef.current.value = "";
       setRadioValue(child.isWeekly ? "1" : "2");
-    }
-    if (childQuery.isSuccess) {
       navigate("/");
     }
   };
@@ -102,12 +88,8 @@ export const EditChildForm: VFC<Props> = memo(({ id, child, childQuery }) => {
         >
           <Card className="rounded-lg">
             <Card.Body>
-             
-            {childQuery.isError && (
-                <Alert variant="danger">{childQuery.error}</Alert>
-              )}
-            {childQuery.isSuccess && (
-                <Alert variant="success">Sucess!</Alert>
+              {mutation.isError && (
+                <Alert variant="danger">{mutation.error}</Alert>
               )}
               <Form onSubmit={handleSubmit}>
                 <Form.Group id="name" className="mb-3  text-secondary">
@@ -194,7 +176,7 @@ export const EditChildForm: VFC<Props> = memo(({ id, child, childQuery }) => {
                 <Row>
                   <Col xs={{ span: 2, offset: 8 }} md={{ span: 2, offset: 10 }}>
                     <Button
-                      disabled={childQuery.isLoading}
+                      disabled={mutation.isLoading}
                       type="submit"
                       className="text-info mt-1"
                     >
