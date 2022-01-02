@@ -15,27 +15,28 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUserCircle } from "@fortawesome/free-solid-svg-icons";
 import moment from "moment";
 import "../scss/App.scss";
-// import { useAuthContext } from "../contexts/AuthContext";
-import useEditChild from "../hooks/useEditChild";
+
+import useEditChild from "../hooks/useEditChild"
+
 
 interface Props {
   id: string;
   child: DocumentData;
 }
 
-export const EditChildForm: VFC<Props> = memo(({ id, child }) => {
-  const mutation = useEditChild(id);
+export const EditChildForm: VFC<Props> = memo( ({ id, child }) => {
   const nameRef = useRef<HTMLInputElement>(child.name);
   const priceRef = useRef<HTMLInputElement>(child.price);
   const [radioValue, setRadioValue] = useState(child.isWeekly ? "1" : "2");
+  const mutation = useEditChild(id)
   const navigate = useNavigate();
-  // const { currentUser } = useAuthContext();
   const radios = [
     { name: "Weekly", value: "1" },
     { name: "Monthly", value: "2" },
   ];
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit =  (e: React.FormEvent<HTMLFormElement>) => {
+    console.log(mutation)
     e.preventDefault();
     if (!nameRef.current || !priceRef.current) {
       return;
@@ -60,23 +61,21 @@ export const EditChildForm: VFC<Props> = memo(({ id, child }) => {
         ? nextMonday
         : moment().add(1, "M").startOf("month").format("YYYY-MM-DD"); // the first date of next month
 
-    await mutation.mutate({
-      name: nameRef.current.value.length ? nameRef.current.value : child.name,
-      price: priceRef.current.value.length
-        ? parseInt(priceRef.current.value)
-        : child.price,
-      weekly: radioValue === "1" ? true : false,
-      nextDate,
-    });
-    console.log(mutation);
+        mutation.mutate({
+       name: nameRef.current.value.length ? nameRef.current.value : child.name,
+       price: priceRef.current.value.length
+         ? parseInt(priceRef.current.value)
+         : child.price,
+       weekly: radioValue === "1" ? true : false,
+       nextDate,
+     });         
+        nameRef.current.value = "";
+        priceRef.current.value = "";
+        setRadioValue(child.isWeekly ? "1" : "2");
+        navigate("/");
+      
 
-    if (mutation.isSuccess) {
-      nameRef.current.value = "";
-      priceRef.current.value = "";
-      setRadioValue(child.isWeekly ? "1" : "2");
-      navigate("/");
     }
-  };
 
   return (
     <>
