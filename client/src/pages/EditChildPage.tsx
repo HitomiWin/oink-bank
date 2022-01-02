@@ -2,12 +2,12 @@ import { memo, VFC } from "react";
 import { EditChildForm } from "../components/EditChildForm";
 import { useParams } from "react-router-dom";
 import { Alert } from "react-bootstrap";
+
 import useGetDocument from "../hooks/useGetDocument";
 
 export const EditChildPage: VFC = memo(() => {
   const { id } = useParams();
   const childQuery = useGetDocument("children", id ?? "");
-  
 
 
   if (childQuery.isError) {

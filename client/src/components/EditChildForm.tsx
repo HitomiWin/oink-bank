@@ -28,7 +28,7 @@ export const EditChildForm: VFC<Props> = memo( ({ id, child }) => {
   const nameRef = useRef<HTMLInputElement>(child.name);
   const priceRef = useRef<HTMLInputElement>(child.price);
   const [radioValue, setRadioValue] = useState(child.isWeekly ? "1" : "2");
-  const mutation = useEditChild(id)
+  const mutation = useEditChild()
   const navigate = useNavigate();
   const radios = [
     { name: "Weekly", value: "1" },
@@ -60,7 +60,7 @@ export const EditChildForm: VFC<Props> = memo( ({ id, child }) => {
         ? nextMonday
         : moment().add(1, "M").startOf("month").format("YYYY-MM-DD"); // the first date of next month
 
-        mutation.mutate({
+        mutation.mutate(id,{
        name: nameRef.current.value.length ? nameRef.current.value : child.name,
        price: priceRef.current.value.length
          ? parseInt(priceRef.current.value)

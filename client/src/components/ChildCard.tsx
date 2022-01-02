@@ -20,10 +20,10 @@ interface Props {
 
 export const ChildCard: VFC<Props> = memo(({ child }) => {
   const { addEvents } = useAddEvents();
-  const mutation = useEditChild(child.id);
+  const mutation = useEditChild();
   const isRegular = true;
 
-  const addEventsWeekly =  () => {
+  const addEventsWeekly = async () => {
     const startWeeklyDate = moment(
       child.lastDate ?? moment().format("YYYY-MM-DD")
     );
@@ -36,7 +36,7 @@ export const ChildCard: VFC<Props> = memo(({ child }) => {
     }
 
     if (results && results.length > 0) {
-       results.map((result) =>
+      results.map((result) =>
         addEvents(
           child,
           child.id,
@@ -45,28 +45,31 @@ export const ChildCard: VFC<Props> = memo(({ child }) => {
           result.format("YYYY-MM-DD")
         )
       );
-        mutation.mutate({ lastDate: results[0].format("YYYY-MM-DD") })
+      console.log({results})
+      await mutation.mutate(child.id, {
+        lastDate: results[0].format("YYYY-MM-DD"),
+      });
     }
     results = [];
   };
-  const addEventsMonthly =   () => {
+  const addEventsMonthly = async () => {
     const startMonthlyDate = moment(child.lastDate);
     const endMonthlyDate = moment().startOf("month").format("YYYY-MM-DD");
     let results = [];
     const current = startMonthlyDate.clone();
 
-    while  (current.isBefore(endMonthlyDate)) {
+    while (current.isBefore(endMonthlyDate)) {
       current.add(1, "month");
       results.push(current.startOf("month").format("YYYY-MM-DD"));
       if (results && results.length > 0) {
-       results.map(
-           (result) =>
-           addEvents(child, child.id, isRegular, child.price, result)
+        results.map((result) =>
+          addEvents(child, child.id, isRegular, child.price, result)
         );
-       mutation.mutate({ lastDate: results[0] });
-        results = [];
+        await mutation.mutate(child.id, { lastDate: results[0] });
+       
       }
     }
+    results = [];
   };
 
   useEffect(() => {
