@@ -72,7 +72,7 @@ export const AddChildForm: VFC<Props> = memo(({ childQuery }) => {
       name: nameRef.current.value,
       price: parseInt(priceRef.current.value, 10),
       parent: currentUser?.uid,
-      weekly: radioValue === "1" ? true : false,
+      isWeekly: radioValue === "1" ? true : false,
       isPaused: false,
       nextDate,
       lastDate: moment().format("YYYY-MM-DD"),

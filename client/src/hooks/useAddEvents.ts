@@ -4,10 +4,9 @@ import {
   addDoc,
   // query,
   // where,
-  // orderBy,
+  orderBy,
   DocumentData,
 } from "firebase/firestore";
-import moment from "moment";
 import { db } from "../firebase";
 
 const useAddEvents = () => {
@@ -16,20 +15,20 @@ const useAddEvents = () => {
   const [isLoading, setIsLoading] = useState<null | boolean>(null);
   const [isSuccess, setIsSuccess] = useState<null | boolean>(null);
 
-  const addEvents = async (child: DocumentData, id:string, isRegular: boolean, price:number) => {
+  const addEvents = async (child: DocumentData, id:string, isRegular: boolean, price:number, paymentDate:string) => {
     setError(null);
     setIsError(null);
     setIsSuccess(null);
     setIsLoading(true);
+    
 
     try {isRegular?
-
       await addDoc(collection(db, "children", id, "events"), {
-        paymentDate:  moment().format("YYYY-MM-DD"),
+        paymentDate,
         price,
         isRegular,
       }): await addDoc(collection(db,"children", id,"events"),{
-        paymentDate: moment().format("YYYY-MM-DD"),
+        paymentDate,
         price,
         isRegular,
       });

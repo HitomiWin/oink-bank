@@ -12,19 +12,76 @@ import { DocumentData, doc, updateDoc } from "firebase/firestore";
 import { db } from "../firebase";
 import moment from "moment";
 import useAddEvents from "../hooks/useAddEvents";
+import useEditChild from "../hooks/useEditChild";
 
 interface Props {
   child: DocumentData;
 }
 
 export const ChildCard: VFC<Props> = memo(({ child }) => {
-  const {addEvents}= useAddEvents();
+  const { addEvents } = useAddEvents();
+  const mutation = useEditChild(child.id);
   const isRegular = true;
-  
+
+  const addEventsWeekly =  () => {
+    const startWeeklyDate = moment(
+      child.lastDate ?? moment().format("YYYY-MM-DD")
+    );
+    const endWeeklyDate = moment().format("YYYY-MM-DD");
+    const day = 1; // 1=monday
+    let results = [];
+    const current = startWeeklyDate?.clone();
+    while (current?.day(7 + day).isBefore(endWeeklyDate)) {
+      results.push(current.clone());
+    }
+
+    if (results && results.length > 0) {
+       results.map((result) =>
+        addEvents(
+          child,
+          child.id,
+          isRegular,
+          child.price,
+          result.format("YYYY-MM-DD")
+        )
+      );
+        mutation.mutate({ lastDate: results[0].format("YYYY-MM-DD") })
+    }
+    results = [];
+  };
+  const addEventsMonthly =   () => {
+    const startMonthlyDate = moment(child.lastDate);
+    const endMonthlyDate = moment().startOf("month").format("YYYY-MM-DD");
+    let results = [];
+    const current = startMonthlyDate.clone();
+
+    while  (current.isBefore(endMonthlyDate)) {
+      current.add(1, "month");
+      results.push(current.startOf("month").format("YYYY-MM-DD"));
+      if (results && results.length > 0) {
+       results.map(
+           (result) =>
+           addEvents(child, child.id, isRegular, child.price, result)
+        );
+       mutation.mutate({ lastDate: results[0] });
+        results = [];
+      }
+    }
+  };
+
   useEffect(() => {
-   addEvents(child,child.id, isRegular, child.price)
+    if (child) {
+      console.log("child");
+      if (child.isWeekly === true) {
+        console.log("true");
+        addEventsWeekly();
+      } else if (child.isWeekly === false) {
+        console.log("false");
+        addEventsMonthly();
+      }
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [child, isRegular, child.price])
+  }, [child, isRegular, child.price]);
   const navigate = useNavigate();
 
   const handleCardOnClick = (

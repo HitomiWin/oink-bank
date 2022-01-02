@@ -36,7 +36,6 @@ export const EditChildForm: VFC<Props> = memo( ({ id, child }) => {
   ];
 
   const handleSubmit =  (e: React.FormEvent<HTMLFormElement>) => {
-    console.log(mutation)
     e.preventDefault();
     if (!nameRef.current || !priceRef.current) {
       return;
@@ -66,7 +65,7 @@ export const EditChildForm: VFC<Props> = memo( ({ id, child }) => {
        price: priceRef.current.value.length
          ? parseInt(priceRef.current.value)
          : child.price,
-       weekly: radioValue === "1" ? true : false,
+       isWeekly: radioValue === "1" ? true : false,
        nextDate,
      });         
         nameRef.current.value = "";

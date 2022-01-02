@@ -9,6 +9,7 @@ import {
 import { useParams } from "react-router-dom";
 import { Alert } from "react-bootstrap";
 import { DocumentData } from "firebase/firestore";
+import moment from "moment";
 
 import useGetDocument from "../hooks/useGetDocument";
 import { HistoryCard } from "../components/HistoryCard";
@@ -47,7 +48,8 @@ export const ChildHistoryList: VFC = memo(() => {
         child,
         id,
         isRegular,
-        parseInt(priceRef.current.value)
+        parseInt(priceRef.current.value),
+        moment().format("YYYY-MM-DD"),
       );
     }
   };
