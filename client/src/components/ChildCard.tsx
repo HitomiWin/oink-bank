@@ -8,10 +8,9 @@ import {
   faArrowCircleRight,
 } from "@fortawesome/free-solid-svg-icons";
 import "../scss/App.scss";
-import { DocumentData, doc, updateDoc } from "firebase/firestore";
-import { db } from "../firebase";
+import { DocumentData } from "firebase/firestore";
 import moment from "moment";
-import useAddEvents from "../hooks/useAddEvents";
+import useAddTransaction from "../hooks/useAddTransaction";
 import useEditChild from "../hooks/useEditChild";
 
 interface Props {
@@ -19,54 +18,57 @@ interface Props {
 }
 
 export const ChildCard: VFC<Props> = memo(({ child }) => {
-  const { addEvents } = useAddEvents();
+  const { addTransaction } = useAddTransaction();
   const mutation = useEditChild();
   const isRegular = true;
 
-  const addEventsWeekly = async () => {
+  const addTransactionWeekly = async () => {
     const startWeeklyDate = moment(
-      child.lastDate ?? moment().format("YYYY-MM-DD")
+      child.lastDate ?? moment().format("YYYY/MM/DD HH:mm:ss")
     );
-    const endWeeklyDate = moment().format("YYYY-MM-DD");
+    const endWeeklyDate = moment().format("YYYY/MM/DD HH:mm:ss");
     const day = 1; // 1=monday
     let results = [];
     const current = startWeeklyDate?.clone();
-    while (current?.day(7 + day).isBefore(endWeeklyDate)) {
+    while (current?.day(7 + day).isSameOrBefore(endWeeklyDate)) {
       results.push(current.clone());
     }
 
     if (results && results.length > 0) {
-      results.map((result) =>
-        addEvents(
-          child,
-          child.id,
-          isRegular,
-          child.price,
-          result.format("YYYY-MM-DD")
-        )
+      results.map(
+        async (result) =>
+          await addTransaction(
+            child.id,
+            isRegular,
+            child.price,
+            result.format("YYYY/MM/DD HH:mm:ss")
+          )
       );
-      console.log({results})
+      console.log({ results });
       await mutation.mutate(child.id, {
-        lastDate: results[0].format("YYYY-MM-DD"),
+        lastDate: results[0].format("YYYY/MM/DD HH:mm:ss"),
       });
     }
     results = [];
   };
-  const addEventsMonthly = async () => {
+  const addTransactionMonthly = async () => {
     const startMonthlyDate = moment(child.lastDate);
-    const endMonthlyDate = moment().startOf("month").format("YYYY-MM-DD");
+    const endMonthlyDate = moment()
+      .startOf("month")
+      .format("YYYY/MM/DD HH:mm:ss");
     let results = [];
     const current = startMonthlyDate.clone();
 
     while (current.isBefore(endMonthlyDate)) {
       current.add(1, "month");
-      results.push(current.startOf("month").format("YYYY-MM-DD"));
+      results.push(current.startOf("month").format("YYYY/MM/DD HH:mm:ss"));
       if (results && results.length > 0) {
-        results.map((result) =>
-          addEvents(child, child.id, isRegular, child.price, result)
+        results.map(
+          async (result) =>
+            await addTransaction(child.id, isRegular, child.price, result)
         );
+        console.log("beforeMutate");
         await mutation.mutate(child.id, { lastDate: results[0] });
-       
       }
     }
     results = [];
@@ -77,14 +79,14 @@ export const ChildCard: VFC<Props> = memo(({ child }) => {
       console.log("child");
       if (child.isWeekly === true) {
         console.log("true");
-        addEventsWeekly();
+        addTransactionWeekly();
       } else if (child.isWeekly === false) {
         console.log("false");
-        addEventsMonthly();
+        addTransactionMonthly();
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [child, isRegular, child.price]);
+  }, [child.id, isRegular, child.price]);
   const navigate = useNavigate();
 
   const handleCardOnClick = (
@@ -105,8 +107,7 @@ export const ChildCard: VFC<Props> = memo(({ child }) => {
     e: React.MouseEvent<HTMLElement, MouseEvent>
   ) => {
     e.stopPropagation();
-    const ref = doc(db, "children", child.id);
-    await updateDoc(ref, {
+    mutation.mutate(child.id, {
       isPaused: !child.isPaused,
     });
   };
@@ -172,7 +173,7 @@ export const ChildCard: VFC<Props> = memo(({ child }) => {
                 </Row>
                 <Row className="mb-2">
                   <Col xs={{ span: 3, offset: 2 }} md={{ span: 3, offset: 2 }}>
-                    {child.weekly ? <h6>Weekly</h6> : <h6>Monthly</h6>}
+                    {child.isWeekly ? <h6>Weekly</h6> : <h6>Monthly</h6>}
                   </Col>
                   <Col xs={{ span: 3, offset: 3 }} md={{ span: 3, offset: 2 }}>
                     <h6>{child.price} kr</h6>

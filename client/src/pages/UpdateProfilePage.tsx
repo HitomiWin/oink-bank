@@ -86,10 +86,7 @@ export const UpdateProfilePage: VFC = memo(() => {
 
                 <Form.Group id="email" className="mb-3 text-secondary">
                   <Form.Label>Email</Form.Label>
-                  <Form.Control
-                    type="email"
-                    ref={emailRef}
-                  />
+                  <Form.Control type="email" ref={emailRef} />
                 </Form.Group>
 
                 <Form.Group id="password" className="mb-3 text-secondary">

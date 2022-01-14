@@ -16,26 +16,26 @@ import { faUserCircle } from "@fortawesome/free-solid-svg-icons";
 import moment from "moment";
 import "../scss/App.scss";
 
-import useEditChild from "../hooks/useEditChild"
-
+import useEditChild from "../hooks/useEditChild";
 
 interface Props {
   id: string;
   child: DocumentData;
 }
 
-export const EditChildForm: VFC<Props> = memo( ({ id, child }) => {
+export const EditChildForm: VFC<Props> = memo(({ id, child }) => {
   const nameRef = useRef<HTMLInputElement>(child.name);
   const priceRef = useRef<HTMLInputElement>(child.price);
   const [radioValue, setRadioValue] = useState(child.isWeekly ? "1" : "2");
-  const mutation = useEditChild()
+  const mutation = useEditChild();
   const navigate = useNavigate();
   const radios = [
     { name: "Weekly", value: "1" },
     { name: "Monthly", value: "2" },
   ];
 
-  const handleSubmit =  (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    console.log(radioValue)
     e.preventDefault();
     if (!nameRef.current || !priceRef.current) {
       return;
@@ -60,21 +60,26 @@ export const EditChildForm: VFC<Props> = memo( ({ id, child }) => {
         ? nextMonday
         : moment().add(1, "M").startOf("month").format("YYYY-MM-DD"); // the first date of next month
 
-        mutation.mutate(id,{
-       name: nameRef.current.value.length ? nameRef.current.value : child.name,
-       price: priceRef.current.value.length
-         ? parseInt(priceRef.current.value)
-         : child.price,
-       isWeekly: radioValue === "1" ? true : false,
-       nextDate,
-     });         
-        nameRef.current.value = "";
-        priceRef.current.value = "";
-        setRadioValue(child.isWeekly ? "1" : "2");
-        navigate("/");
-      
-
-    }
+    mutation.mutate(id, {
+      name: nameRef.current.value.length ? nameRef.current.value : child.name,
+      price: priceRef.current.value.length
+        ? parseInt(priceRef.current.value)
+        : child.price,
+      isWeekly: radioValue === "1" ? true : false,
+      // if isWeekly changed value, todays date sets to lastDate
+      lastDate:
+        radioValue === "1"
+          ? true
+          : false !== child.isWeekly
+          ? moment().format("YYYY-MM-DD")
+          : child.lastDate,
+      nextDate,
+    });
+    nameRef.current.value = "";
+    priceRef.current.value = "";
+    setRadioValue(child.isWeekly ? "1" : "2");
+    navigate("/");
+  };
 
   return (
     <>

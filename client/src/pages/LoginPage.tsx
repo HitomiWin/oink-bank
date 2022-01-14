@@ -6,7 +6,7 @@ import { useAuthContext } from "../contexts/AuthContext";
 export const LoginPage: VFC = memo(() => {
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
-  const [error, setError] = useState<null |string >(null);
+  const [error, setError] = useState<null | string>(null);
   const [loading, setLoading] = useState(false);
   const { login } = useAuthContext();
   const navigate = useNavigate();
@@ -14,14 +14,14 @@ export const LoginPage: VFC = memo(() => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError(null);
-    if(!emailRef.current || !passwordRef.current){
-      return
-    }else {
+    if (!emailRef.current || !passwordRef.current) {
+      return;
+    } else {
       try {
         setLoading(true);
         await login(emailRef.current.value, passwordRef.current.value);
         navigate("/");
-      } catch (e:any) {
+      } catch (e: any) {
         setError(e.message);
         setLoading(false);
       }

@@ -1,59 +1,59 @@
-import { useEffect, useState } from 'react'
-import { db } from '../firebase'
-import { doc, onSnapshot, DocumentData } from 'firebase/firestore'
+import { useEffect, useState } from "react";
+import { db } from "../firebase";
+import { doc, onSnapshot, DocumentData } from "firebase/firestore";
 
-const useGetDocument = (col:string, id:string) => {
-  
-	const [isLoading, setIsLoading] = useState<boolean | null>(null)
-  const [isError, setIsError] =useState<boolean | null>(null)
-  const [error,setError] = useState<string | null>(null)
-	const [data, setData] = useState<DocumentData| null>(null)
+const useGetDocument = (col: string, id: string) => {
+  const [isLoading, setIsLoading] = useState<boolean | null>(null);
+  const [isError, setIsError] = useState<boolean | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [data, setData] = useState<DocumentData | null>(null);
 
-  const getDoc =async()=>{
-    setIsLoading(true)
-    setIsError(false)
-    setError(null)
+  const getDoc = async () => {
+    setIsLoading(true);
+    setIsError(false);
+    setError(null);
 
-		// get document reference
-		const ref = doc(db, col, id)
+    // get document reference
+    const ref = doc(db, col, id);
 
-		// attach listener
-		const unsubscribe = onSnapshot(ref, (snapshot) => {
-			if (!snapshot.exists()) {
-				setData(null)
-				setIsLoading(false)
-				return
-			}
+    // attach listener
+    const unsubscribe = onSnapshot(
+      ref,
+      (snapshot) => {
+        if (!snapshot.exists()) {
+          setData(null);
+          setIsLoading(false);
+          return;
+        }
 
-			setData(snapshot.data())
-			setIsLoading(false)
-		},(error)=>{
-      setError(error.message)
-      setIsError(true)
-      setIsLoading(false)
-      
-    })
-      return unsubscribe
-
-  }
+        setData(snapshot.data());
+        setIsLoading(false);
+      },
+      (error) => {
+        setError(error.message);
+        setIsError(true);
+        setIsLoading(false);
+      }
+    );
+    return unsubscribe;
+  };
   useEffect(() => {
-    getDoc()
+    getDoc();
     return () => {
-      setIsLoading(null)
-      setIsError(null)
-      setError(null)
-      setData(null)
-    }
-   // eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [col,id])
+      setIsLoading(null);
+      setIsError(null);
+      setError(null);
+      setData(null);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [col, id]);
 
-
-	return {
-		isLoading,
-		data,
+  return {
+    isLoading,
+    data,
     error,
-    isError
-	}
-}
+    isError,
+  };
+};
 
-export default useGetDocument
+export default useGetDocument;

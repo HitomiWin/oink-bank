@@ -13,13 +13,13 @@ import moment from "moment";
 
 import useGetDocument from "../hooks/useGetDocument";
 import { HistoryCard } from "../components/HistoryCard";
-import useAddEvents from "../hooks/useAddEvents";
-import useGetEvents from "../hooks/useGetEvents";
+import useAddTransAction from "../hooks/useAddTransaction";
+import useGetTransActions from "../hooks/useGetTransactions";
 
-interface Event {
-  id:string,
-  paymentDate:Date,
-  price:number
+interface Transaction {
+  id: string;
+  paymentDate: Date;
+  price: number;
 }
 
 export const ChildHistoryList: VFC = memo(() => {
@@ -29,14 +29,15 @@ export const ChildHistoryList: VFC = memo(() => {
   const childQuery = useGetDocument("children", id ?? "");
 
   const child = childQuery.data ?? null;
-  const eventsQuery = useAddEvents();
-  const getEventsQuery = useGetEvents(id ?? "");
-  const events = getEventsQuery.data?.docs.map((event :DocumentData) => {
-    return { id: event.id, ...event.data() };
-  });
-  console.log(events)
+  const TransActionsQuery = useAddTransAction();
+  const getTransActionsQuery = useGetTransActions(id ?? "");
+  const TransActions = getTransActionsQuery.data?.docs.map(
+    (Transaction: DocumentData) => {
+      return { id: Transaction.id, ...Transaction.data() };
+    }
+  );
 
-  const handleOnSubmit = async  (e: React.FormEvent<HTMLFormElement>) => {
+  const handleOnSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const isRegular = false;
 
@@ -44,12 +45,11 @@ export const ChildHistoryList: VFC = memo(() => {
       return;
     }
     if (child && id) {
-      await eventsQuery.addEvents(
-        child,
+      await TransActionsQuery.addTransaction(
         id,
         isRegular,
         parseInt(priceRef.current.value),
-        moment().format("YYYY-MM-DD"),
+        moment().format("YYYY/MM/DD HH:mm:ss")
       );
     }
   };
@@ -62,10 +62,10 @@ export const ChildHistoryList: VFC = memo(() => {
     return <p>Loading...</p>;
   }
 
-  if (eventsQuery && priceRef.current) {
+  if (TransActionsQuery && priceRef.current) {
     priceRef.current.value = "";
   }
-  return eventsQuery && child ? (
+  return TransActionsQuery && child ? (
     <>
       <Row>
         <Col
@@ -91,10 +91,10 @@ export const ChildHistoryList: VFC = memo(() => {
           </Row>
           <Card className="mt-3">
             <Card.Body>
-              {eventsQuery.isError && (
-                <Alert variant="danger"> {eventsQuery.error} </Alert>
+              {TransActionsQuery.isError && (
+                <Alert variant="danger"> {TransActionsQuery.error} </Alert>
               )}
-              {eventsQuery.isSuccess && (
+              {TransActionsQuery.isSuccess && (
                 <Alert variant="success">Sucsess!</Alert>
               )}
               <Card.Title className="text-secondary text-center mb-4">
@@ -130,7 +130,7 @@ export const ChildHistoryList: VFC = memo(() => {
                       <Button
                         type="submit"
                         variant="primary"
-                        disabled={eventsQuery.isLoading === true}
+                        disabled={TransActionsQuery.isLoading === true}
                         className="text-info"
                       >
                         Save
@@ -144,14 +144,18 @@ export const ChildHistoryList: VFC = memo(() => {
 
           <h4 className="text-center my-4">History</h4>
           <Row>
-            {getEventsQuery.isError && (
-              <Alert variant="danger"> {getEventsQuery.error} </Alert>
+            {getTransActionsQuery.isError && (
+              <Alert variant="danger"> {getTransActionsQuery.error} </Alert>
             )}
-            {getEventsQuery.isLoading && <p>Loading...</p>} 
-           
-              {events ? events.map((event:Event) => (
-                <HistoryCard key={event.id} event={event} />
-              )):<p>No History</p>}
+            {getTransActionsQuery.isLoading && <p>Loading...</p>}
+
+            {TransActions ? (
+              TransActions.map((transaction: Transaction) => (
+                <HistoryCard key={transaction.id} transaction={transaction} />
+              ))
+            ) : (
+              <p>No History</p>
+            )}
           </Row>
         </Col>
       </Row>

@@ -2,32 +2,34 @@ import { useState } from "react";
 import {
   collection,
   addDoc,
+  serverTimestamp,
   // query,
   // where,
-  orderBy,
+  // orderBy,
   DocumentData,
 } from "firebase/firestore";
 import { db } from "../firebase";
 
-const useAddEvents = () => {
+const useAddTransaction = () => {
   const [error, setError] = useState<null | boolean>(null);
   const [isError, setIsError] = useState<null | boolean>(null);
   const [isLoading, setIsLoading] = useState<null | boolean>(null);
   const [isSuccess, setIsSuccess] = useState<null | boolean>(null);
 
-  const addEvents = async (child: DocumentData, id:string, isRegular: boolean, price:number, paymentDate:string) => {
+  const addTransaction = async (
+    id: string,
+    isRegular: boolean,
+    price: number,
+    paymentDate: string
+  ) => {
     setError(null);
     setIsError(null);
     setIsSuccess(null);
     setIsLoading(true);
-    
 
-    try {isRegular?
-      await addDoc(collection(db, "children", id, "events"), {
-        paymentDate,
-        price,
-        isRegular,
-      }): await addDoc(collection(db,"children", id,"events"),{
+    try {
+      await addDoc(collection(db, "children", id, "transactions"), {
+        created: serverTimestamp(),
         paymentDate,
         price,
         isRegular,
@@ -42,8 +44,7 @@ const useAddEvents = () => {
     }
   };
 
-
-  return { error, isError, isLoading, isSuccess, addEvents };
+  return { error, isError, isLoading, isSuccess, addTransaction };
 };
 
-export default useAddEvents;
+export default useAddTransaction;

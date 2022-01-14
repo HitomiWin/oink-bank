@@ -7,30 +7,33 @@ export const SignupPage: VFC = memo(() => {
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
   const passwordConfirmRef = useRef<HTMLInputElement>(null);
-  const [error, setError] = useState<null |string >(null);
+  const [error, setError] = useState<null | string>(null);
   const [loading, setLoading] = useState(false);
   const { signup } = useAuthContext();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
- 
-    setError(null);
-    if(!emailRef.current || !passwordRef.current || !passwordConfirmRef.current){
-      return
-    }else if (passwordRef.current.value !== passwordConfirmRef.current.value) {
-			return setError("The passwords does not match")
-		}
 
-      try {
-        setLoading(true);
-        await signup(emailRef.current.value, passwordRef.current.value);
-        navigate("/");
-      } catch (e:any) {
-        setError(e.message);
-        setLoading(false);
-      }
-  
+    setError(null);
+    if (
+      !emailRef.current ||
+      !passwordRef.current ||
+      !passwordConfirmRef.current
+    ) {
+      return;
+    } else if (passwordRef.current.value !== passwordConfirmRef.current.value) {
+      return setError("The password does not match");
+    }
+
+    try {
+      setLoading(true);
+      await signup(emailRef.current.value, passwordRef.current.value);
+      navigate("/");
+    } catch (e: any) {
+      setError(e.message);
+      setLoading(false);
+    }
   };
 
   return (

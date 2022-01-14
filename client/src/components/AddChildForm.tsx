@@ -68,7 +68,7 @@ export const AddChildForm: VFC<Props> = memo(({ childQuery }) => {
         ? nextMonday
         : moment().add(1, "M").startOf("month").format("YYYY-MM-DD"); // the first date of next month
 
-     await childQuery.addChild({
+    await childQuery.addChild({
       name: nameRef.current.value,
       price: parseInt(priceRef.current.value, 10),
       parent: currentUser?.uid,
@@ -80,12 +80,10 @@ export const AddChildForm: VFC<Props> = memo(({ childQuery }) => {
       created: serverTimestamp(),
     });
 
-        nameRef.current.value = "";
-        priceRef.current.value = "";
-        setRadioValue("1");
-        navigate("/");
-      
-    
+    nameRef.current.value = "";
+    priceRef.current.value = "";
+    setRadioValue("1");
+    navigate("/");
   };
 
   return (
